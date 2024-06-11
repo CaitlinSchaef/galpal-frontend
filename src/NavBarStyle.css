@@ -1,0 +1,27 @@
+.navbar {
+    background-color: #03a6a655; 
+    color: #F37A65;
+    text-decoration: none;
+    font-family: "josefin-sans", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+}
+.navbar-brand {
+    color: #F2C3A7;
+    margin-left: 1px;
+    
+  }
+  
+  .nav-link {
+    color: #F2C3A7 !important;
+    padding: 1px;
+  }
+
+  .navbutton {
+    background-color: #F2C3A7;
+    color: #038b8b;
+  }
+/* 
+Palette:
+
+*/
