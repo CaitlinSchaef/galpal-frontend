@@ -19,6 +19,7 @@ import App from './Pages/App.jsx';
 import ErrorPage from './Pages/ErrorPage.jsx';
 import CreateUser from './Pages/CreateUser.jsx';
 import ProfilePortal from './Pages/ProfilePortal.jsx';
+import MyNavBar from './NavBar.jsx';
 
 // import Context
 import { Context } from './Context.js';
