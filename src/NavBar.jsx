@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import NavbarCollapse from 'react-bootstrap/NavbarCollapse'
 import { useState, useContext } from 'react'
-import Logo from './assets/GalPalLogo.svg'
+import Logo from './assets/GalPalLogo.png'
 import { Context } from './Context'
 
 

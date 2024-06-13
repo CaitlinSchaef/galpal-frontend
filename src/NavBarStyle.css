@@ -1,27 +1,37 @@
 .navbar {
-    background-color: #03a6a655; 
-    color: #F37A65;
+    background-color: #D899DB; 
+    color: #B4B6D9;
     text-decoration: none;
     font-family: "josefin-sans", sans-serif;
     font-weight: 600;
     font-style: normal;
 }
 .navbar-brand {
-    color: #F2C3A7;
+    color: #B4B6D9;
     margin-left: 1px;
     
   }
   
   .nav-link {
-    color: #F2C3A7 !important;
+    color: #B4B6D9 !important;
     padding: 1px;
   }
 
   .navbutton {
-    background-color: #F2C3A7;
-    color: #038b8b;
+    background-color: #E6E6FA;
+    color: #2F39C5;
   }
+
 /* 
 Palette:
-
+#A9ACD9 - GREY PURPLE
+#ABABDD - BASE PURPLE
+#B4B6D9 - REALLY GREY COOL PURPLE
+#D5D7F2 - LIGHT LAVENDER
+#E6E6FA - realllly light nice grey purple in logo
+#D9AC89 - MUTED ORANGE
+#D899DB - MUTED PINK
+#A97AA1 - DEEP MUTED PINK
+#2F39C5 - BRIGHT DEEP BLUE
+#696ED6 - BRIGHT FUNKY PURPLE
 */
