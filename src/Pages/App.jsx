@@ -6,6 +6,8 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Logo from '../assets/GalPalLogo.png'
 
+
+
 const Body = () => {
 
   return (
@@ -14,22 +16,16 @@ const Body = () => {
     minBreakpoint="xs"
     >
       <Container>
-        <Row className="justify-content-center m-3">
-          <Col xs={6} md={3} className="d-flex flex-column justify-content-between text-center">
-            <div style={{height: "50vh"}}>
-             <br />
+        <Row className="justify-content-center">
+          <Col xs={6} md={3} className="justify-content-center">
                 <Link to ='/LogIn'>
-                <button className="FrontLogo">
                 <img
                   alt=""
                   src={Logo}
                   width="250"
                   height="250"
-                  className="d-inline-block m-auto"
                 />
-                </button>
                 </Link>
-            </div>
           </Col>
         </Row>
       </Container>

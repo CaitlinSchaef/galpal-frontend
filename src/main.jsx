@@ -22,6 +22,9 @@ import CreateUser from './Pages/CreateUser.jsx';
 import ProfilePortal from './Pages/ProfilePortal.jsx';
 import MyNavBar from './NavBar.jsx';
 
+// import Reducer
+import { displayReducer, initialState } from './DisplayReducer.js';
+
 // import Context
 import { Context } from './Context.js';
 
@@ -88,21 +91,24 @@ const ContextProvider = ({ children }) => {
   
   const [accessToken, setAccessToken] = useState(tempToken ? tempToken : '')
   const [user, setUser] = useState(tempUser ? tempUser : '')
+  const [state, dispatch] = useReducer(displayReducer, initialState)
 
   useEffect(() => {
     localStorage.setItem("token", JSON.stringify(accessToken))
     localStorage.setItem("user", user)
   }, [accessToken])
 
-  const auth = {
+  const context = {
     accessToken,
     setAccessToken,
     user,
-    setUser
+    setUser,
+    state,
+    dispatch,
   }
 
   return (
-    <Context.Provider value ={{ auth }}>
+    <Context.Provider value ={{ context }}>
       {children}
     </Context.Provider>
   )

@@ -12,7 +12,7 @@ import { Context } from './Context'
 
 //I think I want to put the log out button on a page in settings?
 function MyNavBar() {
-  const { auth } = useContext(Context)
+  const { context } = useContext(Context)
   
   // this will both clear the local storage and also take away the access token!
   const logOut = () => {

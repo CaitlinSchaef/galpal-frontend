@@ -8,12 +8,12 @@ import { getToken } from "../api"
 import { Context } from '../Context'
 
 const Body = () => {
-  const { auth } = useContext(Context)
+  const { context } = useContext(Context)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const submit = () => {
-    getToken({ auth, username, password })
+    getToken({ context, username, password })
   }
 
   return (

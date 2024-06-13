@@ -3,36 +3,38 @@ import axios from 'axios'
 // const baseUrl = 'https://galpal-backend.fly.dev/'
 const baseUrl = 'http://127.0.0.1:8000/'
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//User stuff
 
 // Get access token (this happens on user log in):
-export const getToken = ({ auth, username, password }) => {
+export const getToken = ({ context, username, password }) => {
     return axios.post(`${baseUrl}token/`, {
         username: username,
         password: password
     }).then(response => {
         console.log('TOKEN RESPONSE: ', response)
-        auth.setAccessToken(response.data.access)
-        auth.setUser(username)
+        context.setAccessToken(response.data.access)
+        context.setUser(username)
     }).catch(error => {
         console.log('TOKEN GRAB ERROR: ', error)
-        auth.setAccessToken(undefined)
+        context.setAccessToken(undefined)
     })
 }
 
 // Fetch User Profile:
-export const fetchUser = ({ auth }) => {
+export const fetchUser = ({ context }) => {
     axios({
       method: 'get',
       url: `${baseUrl}profile/`, 
       headers: {
-        Authorization: `Bearer ${auth.accessToken}`
+        Authorization: `Bearer ${context.accessToken}`
       }
     }).then(response => {
       console.log('PROFILE: ', response)
     })
     .catch(error => {
       console.log('GET USER ERROR: ', error)
-      auth.setAccessToken(undefined)
+      context.setAccessToken(undefined)
     })
   }
 
@@ -40,7 +42,7 @@ export const fetchUser = ({ auth }) => {
 export const createUser = ({ username, password, firstName, lastName, displayName, bio, email, phone, city, stateLocation, profilePhoto }) => {
     axios({
       method: 'post',
-      url: `${baseUrl}create_user/`, 
+      url: `${baseUrl}create-user/`, 
       headers: {
         'Content-Type': 'multipart/form-data'
       },
@@ -64,3 +66,44 @@ export const createUser = ({ username, password, firstName, lastName, displayNam
       console.log('CREATE USER ERROR: ', error)
     })
   }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Match Questions
+
+// Get Match Profile Questions
+// Get All Questions
+export const getQuestions = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-questions`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  })
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Match Answers
+
+// Get Match Profile Answers
+// this is filtering by the user on the back end maybe it works
+export const getAnswers = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-answers`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  })
+}
+
+// Create Match Profile Answers
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Message Channels
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Messages
