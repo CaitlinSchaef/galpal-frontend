@@ -38,6 +38,14 @@ body {
   margin-top: 30px;
  }
 
+ .FrontLogo {
+  margin-top: 70px;
+  background-color: none;
+  border: none;
+  color: none;
+  border-style: none;
+ }
+
  button {
   background-color: #E6E6FA;
   color: #A97AA1;

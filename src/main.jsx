@@ -16,6 +16,7 @@ import './App.css'
 
 // page imports
 import App from './Pages/App.jsx';
+import LogIn from './Pages/LogIn.jsx';
 import ErrorPage from './Pages/ErrorPage.jsx';
 import CreateUser from './Pages/CreateUser.jsx';
 import ProfilePortal from './Pages/ProfilePortal.jsx';
@@ -61,11 +62,15 @@ const router = createBrowserRouter([
         element: <App />
       },
       {
-        path: '/createuser',
+        path: '/LogIn',
+        element: <LogIn />
+      },
+      {
+        path: '/CreateUser',
         element: <CreateUser />
       },
       {
-        path: '/profileportal',
+        path: '/ProfilePortal',
         element: <Protected component={<ProfilePortal />} />
       },
     ]

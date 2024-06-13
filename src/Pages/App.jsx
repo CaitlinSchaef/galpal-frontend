@@ -4,17 +4,9 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { getToken } from "../api"
-import { Context } from '../Context'
+import Logo from '../assets/GalPalLogo.png'
 
 const Body = () => {
-  const { auth } = useContext(Context)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
-  const submit = () => {
-    getToken({ auth, username, password })
-  }
 
   return (
     <ThemeProvider
@@ -23,31 +15,19 @@ const Body = () => {
     >
       <Container>
         <Row className="justify-content-center m-3">
-          <Col xs={6} md={3} className="d-flex flex-column justify-content-between text-center MainBody">
-            <div className="overflow-scroll" style={{height: "50vh"}}>
-              <h1>Login</h1>
-              <div>
-              <div>Username:</div>
-              <input 
-                onChange={(e) => setUsername(e.target.value)}
-                value={username}
-              />
-              </div>
-              <div>
-                <div>Password:</div>
-                <input 
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                />
-              </div>
-              <div style={{ marginTop: 20 }}>
-                <Link to ='/userprofile'>
-                <button onClick={() => submit()}>Submit</button>
-                </Link>
-              </div>
+          <Col xs={6} md={3} className="d-flex flex-column justify-content-between text-center">
+            <div style={{height: "50vh"}}>
              <br />
-                <Link to ='/CreateUser'>
-                <button>New User? Create Account</button>
+                <Link to ='/LogIn'>
+                <button className="FrontLogo">
+                <img
+                  alt=""
+                  src={Logo}
+                  width="250"
+                  height="250"
+                  className="d-inline-block m-auto"
+                />
+                </button>
                 </Link>
             </div>
           </Col>
