@@ -6,14 +6,17 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { getToken } from "../api"
 import { Context } from '../Context'
+import { useNavigate } from 'react-router-dom'
 
 const Body = () => {
   const { context } = useContext(Context)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const navigate = useNavigate()
 
   const submit = () => {
     getToken({ context, username, password })
+    navigate('/ProfilePortal')
   }
 
   return (
@@ -41,9 +44,9 @@ const Body = () => {
                 />
               </div>
               <div style={{ marginTop: 20 }}>
-                <Link to ='/profileportal'>
+   
                 <button onClick={() => submit()}>Submit</button>
-                </Link>
+
               </div>
              <br />
                 <Link to ='/CreateUser'>

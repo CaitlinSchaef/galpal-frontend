@@ -20,6 +20,7 @@ import LogIn from './Pages/LogIn.jsx';
 import ErrorPage from './Pages/ErrorPage.jsx';
 import CreateUser from './Pages/CreateUser.jsx';
 import ProfilePortal from './Pages/ProfilePortal.jsx';
+import Demo from './Pages/Demo.jsx';
 import MyNavBar from './NavBar.jsx';
 
 // import Reducer
@@ -31,8 +32,8 @@ import { Context } from './Context.js';
 const site = import.meta.env.BASE_URL
 
 const Protected = ({component}) => {
-  const { auth } = useContext(Context)
-  return auth?.accessToken ? (
+  const { context } = useContext(Context)
+  return context?.accessToken ? (
     <>
       {component}
     </>
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
         path: '/ProfilePortal',
         element: <Protected component={<ProfilePortal />} />
       },
+      {
+        path: '/Demo',
+        element: <Protected component={<Demo />} />
+      },
     ]
   }
 ], {
@@ -94,7 +99,7 @@ const ContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(displayReducer, initialState)
 
   useEffect(() => {
-    localStorage.setItem("token", JSON.stringify(accessToken))
+    localStorage.setItem("token", accessToken)
     localStorage.setItem("user", user)
   }, [accessToken])
 

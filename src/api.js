@@ -98,8 +98,64 @@ export const getAnswers = ({ context }) => {
 }
 
 // Create Match Profile Answers
+export const createAnswer = ({ context, question, answer, image, }) => {
+  console.log('THIS IS THE SUBMISSION: ', postCategory)  
+  return axios({
+      method: 'post',
+      url: `${baseUrl}create-answer/`,
+      headers: {
+        Authorization: `Bearer ${auth.accessToken}`,
+        'Content-Type': 'multipart/form-data'
+      },
+      data: {
+         question: postSubCategory, 
+         answer: postBody, 
+         image_answer: image
+      }
+    })
+  }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Interests
 
+//get all of the interests
+export const getInterests = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-interests`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  }).then(response => {
+    console.log('GET INTERESTS: ', response)
+  })
+  .catch(error => {
+    console.log('GET INTERESTS ERROR: ', error)
+  })
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Interests Inventories 
+
+// Create new interest inventory
+export const createInterestInventory = ({ context, interest }) => {
+  axios({
+    method: 'post',
+    url: `${baseUrl}create-interest-inventory/`, 
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`,
+    },
+    data: {
+      username: context.user,
+      interest,
+    }
+  }).then(response => {
+    console.log('CREATE INTEREST: ', response)
+  })
+  .catch(error => {
+    console.log('CREATE INTEREST ERROR: ', error)
+  })
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Message Channels

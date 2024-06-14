@@ -4,7 +4,7 @@ import { useReducer } from "react";
 //     JSON.parse(localStorage.getItem('user'))
 
 export const initialState = {
-    user: {
+    currentUser: {
         firstName: '',
         lastName: '',
         user: '',

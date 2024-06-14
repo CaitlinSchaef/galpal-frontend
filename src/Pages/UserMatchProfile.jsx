@@ -20,11 +20,11 @@ const UserProfileDisplay = () => {
         const storedUsername = localStorage.getItem('user')
 
         if (context && storedUsername) {
-            fetchUser({ context }).then(response => {
-                try {
-                    const userProfile = response.data.filter(profile => profile.user !== null)
-                }
-            })
+            // fetchUser({ context }).then(response => {
+            //     try {
+            //         const userProfile = response.data.filter(profile => profile.user !== null)
+            //     }
+            // })
         }
     })
 }
@@ -33,7 +33,7 @@ const UserProfileDisplay = () => {
 function UserMatchProfile(){
     return(
         <div>
-            This is the profile portal
+            This is the place where they can edit or view their match profile
         </div>
     )
 }
