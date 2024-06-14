@@ -113,6 +113,12 @@ export const createAnswer = ({ context, question, answer, image, }) => {
          image_answer: image
       }
     })
+    .then(response => {
+      console.log('CREATE ANSWER: ', response)
+    })
+    .catch(error => {
+      console.log('CREATE ANSWER ERROR: ', error)
+    })
   }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,6 +134,8 @@ export const getInterests = ({ context }) => {
     }
   }).then(response => {
     console.log('GET INTERESTS: ', response)
+    // because you're using this data you need to return the response
+    return response
   })
   .catch(error => {
     console.log('GET INTERESTS ERROR: ', error)
@@ -146,7 +154,7 @@ export const createInterestInventory = ({ context, interest }) => {
       Authorization: `Bearer ${context.accessToken}`,
     },
     data: {
-      username: context.user,
+      // username: context.user,
       interest,
     }
   }).then(response => {
@@ -156,6 +164,8 @@ export const createInterestInventory = ({ context, interest }) => {
     console.log('CREATE INTEREST ERROR: ', error)
   })
 }
+
+// Get interest inventory
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Message Channels

@@ -5,7 +5,7 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { getInterests } from "../api"
+import { getInterests, createInterestInventory } from "../api"
 import { Context } from "../Context"
 
 
@@ -121,18 +121,77 @@ const FifthDemoPage = ({ setDisplay }) => {
 
 const AddInterestDisplay = ({ setDisplay }) => {
     const { context } = useContext(Context)
-    const [interest, setInterest] = useState('')
-    const [interestList, setInterestList] = useState('')
+    const [selectedInterests, setSelectedInterests] = useState([])
+    const [interestList, setInterestList] = useState([])
+    //setting the max number of selections they can select 
+    const maxSelections = 5
 
-    useEffect(() => {getInterests(setInterestList)}, [])
+    useEffect(() => {
+        const fetchInterests = async () => {
+            try {
+                const response = await getInterests({ context })
+                setInterestList(response.data)
+            } catch (error) {
+                console.error('Failed to fetch interests:', error)
+            }
+        }
+        fetchInterests();
+    }, [context]);
+
     console.log('INTEREST LIST: ', interestList)
-    
 
-    const submit = () => {
+   
+    const handleCheckboxChange = (interest) => {
+        setSelectedInterests((prevSelected) => {
+            if (prevSelected.includes(interest)) {
+                return prevSelected.filter((i) => i !== interest)
+            } else if (prevSelected.length < maxSelections) {
+                return [...prevSelected, interest]
+            } else {
+                return prevSelected
+            }
+        });
+    };
 
-    }
+    const handleSubmit = async () => {
+        try {
+            await Promise.all(selectedInterests.map(interest =>
+                createInterestInventory({ context, interest: interest.interests })
+            ))
+        } catch (error) {
+            console.error('Failed to submit interests:', error)
+        }
+    };
 
-}
+    return (
+        <div>
+            <div>Selected Interests: {selectedInterests.length} / {maxSelections}</div>
+            {interestList.length > 0 ? (
+                <form>
+                    {interestList.map((interest) => (
+                        <div key={interest.id}>
+                            <input
+                                type="checkbox"
+                                id={`interest-${interest.id}`}
+                                value={interest.interests}
+                                onChange={() => handleCheckboxChange(interest)}
+                                checked={selectedInterests.includes(interest)}
+                                disabled={!selectedInterests.includes(interest) && selectedInterests.length >= maxSelections}
+                            />
+                            <label htmlFor={`interest-${interest.id}`}>{interest.interests}</label>
+                        </div>
+                    ))}
+                    <button type="button" onClick={handleSubmit} disabled={selectedInterests.length === 0}>
+                        Choose Interests
+                    </button>
+                </form>
+            ) : (
+                <div>No interests found</div>
+            )}
+        </div>
+    );
+};
+
 
 function Demo() {
     const [display, setDisplay] = useState('InitialDisplay:')
