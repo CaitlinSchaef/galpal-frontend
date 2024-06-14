@@ -71,7 +71,6 @@ export const createUser = ({ username, password, firstName, lastName, displayNam
 //Match Questions
 
 // Get Match Profile Questions
-// Get All Questions
 export const getQuestions = ({ context }) => {
   return axios({
     method: 'get',
@@ -79,6 +78,13 @@ export const getQuestions = ({ context }) => {
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
+  }).then(response => {
+    console.log('GET QUESTIONS: ', response)
+    // because you're using this data you need to return the response
+    return response
+  })
+  .catch(error => {
+    console.log('GET QUESTIONS ERROR: ', error)
   })
 }
 
@@ -120,6 +126,12 @@ export const createAnswer = ({ context, question, answer, image, }) => {
       console.log('CREATE ANSWER ERROR: ', error)
     })
   }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Match Requests
+// you need to filter results coming in based on denied? I need to like get user profiles and compare against requests and then don't show anyone that has denied, so prob will need to do stuff with fetch profile 
+// no i need to get match request and then filter out where the user = requested and status = denied
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Interests
@@ -166,6 +178,22 @@ export const createInterestInventory = ({ context, interest }) => {
 }
 
 // Get interest inventory
+export const getInterestInventory = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-interest-inventory`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  }).then(response => {
+    console.log('GET INTEREST INVENTORY: ', response)
+    // because you're using this data you need to return the response
+    return response
+  })
+  .catch(error => {
+    console.log('GET INTEREST INVENTORY ERROR: ', error)
+  })
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Message Channels

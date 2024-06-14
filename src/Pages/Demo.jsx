@@ -5,7 +5,7 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { getInterests, createInterestInventory } from "../api"
+import { getInterests, createInterestInventory, getQuestions } from "../api"
 import { Context } from "../Context"
 
 
@@ -124,7 +124,7 @@ const AddInterestDisplay = ({ setDisplay }) => {
     const [selectedInterests, setSelectedInterests] = useState([])
     const [interestList, setInterestList] = useState([])
     //setting the max number of selections they can select 
-    const maxSelections = 5
+    const maxSelections = 10
 
     useEffect(() => {
         const fetchInterests = async () => {
@@ -165,7 +165,7 @@ const AddInterestDisplay = ({ setDisplay }) => {
 
     return (
         <div>
-            <div>Selected Interests: {selectedInterests.length} / {maxSelections}</div>
+            <div>Select Your Interests: {selectedInterests.length} / {maxSelections}</div>
             {interestList.length > 0 ? (
                 <form>
                     {interestList.map((interest) => (
@@ -191,6 +191,29 @@ const AddInterestDisplay = ({ setDisplay }) => {
         </div>
     );
 };
+
+const AddAnswerDisplay = ({ setDisplay }) => {
+    const { context } = useContext(Context)
+    const [questionList, setQuestionList] = useState([])
+
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            try {
+                const response = await getQuestions({ context })
+                setQuestionList(response.data)
+            } catch (error) {
+                console.error('Failed to fetch interests:', error)
+            }
+        }
+        fetchQuestions();
+    }, [context]);
+
+    console.log('QUESTION LIST: ', questionList)
+
+    return (
+        <> Lets make some answers </>
+    )
+}
 
 
 function Demo() {
