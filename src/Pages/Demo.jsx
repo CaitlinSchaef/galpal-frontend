@@ -5,7 +5,7 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { getInterests, createInterestInventory, getQuestions } from "../api"
+import { getInterests, createInterestInventory, getQuestions, createMatchProfile } from "../api"
 import { Context } from "../Context"
 
 
@@ -16,101 +16,10 @@ const InitialDisplay = ({ setDisplay }) => {
              <h1>Welcome to the User Demo!</h1>
                 <h3> 
                     We are so excited that you're here and ready to make new friends!
-                    We have just a few things to go over before we finish building your profile and you get started. 
+                    Let's get started by filling out the interest inventory and building your profile.
+                    And don't worry, you'll always be able to update these later!
                 </h3>
                 <button
-                className="me-2"
-                title="FirstDemoPage:" onClick={(() => setDisplay('FirstDemoPage:'))}
-                > Begin Demo: 
-                </button>
-        </>
-    )
-}
-
-const FirstDemoPage = ({ setDisplay }) => {
-    return (
-        <>
-            {/*  Do I want to put the icon? */}
-            <h1> Your Profile Portal </h1>
-            <h3> If you select the GalPal icon in the top left corner, it will take you to your Profile Portal. 
-                This is where you will normally land whenever you log in to your account. From there you can view or update 
-                your interest inventory and your match profile. Match profiles are what you will see whenever you are looking 
-                at potential friends.  
-            </h3>
-                <button
-                className="me-2"
-                title="SecondDemoPage:" onClick={(() => setDisplay('SecondDemoPage:'))}
-                > Next: 
-                </button>
-        </>
-    )
-}
-
-const SecondDemoPage = ({ setDisplay }) => {
-    return (
-        <>
-            {/*  Put the little puzzle icon here */}
-            <h1> Matching </h1>
-            <h3> In the top right corner there are three icons, the first of which is a little puzzle piece.
-                Clicking on the puzzle piece will take you to the matching portal, where you can browse profiles and send friend requests.
-                You have two options when viewing someone's profile, 'Friend' or 'Pass'. If this person has already friended you, a special message 
-                channel will be created, just for you two to get to know each other! Which brings me to our next icon!
-            </h3>
-            <button
-                className="me-2"
-                title="ThirdDemoPage:" onClick={(() => setDisplay('ThirdDemoPage:'))}
-                > Next: 
-                </button>
-        </>
-    )
-}
-
-const ThirdDemoPage = ({ setDisplay }) => {
-    return (
-        <>
-            {/*  Put the little message icon here */}
-            <h1> Messaging </h1>
-            <h3> The second from last icon you see looks like a little piece of mail, and this is where your messaging lives.
-                When two people friend each other, they will automatically see an empty message appear in the messaging page. 
-            </h3>
-            <button
-                className="me-2"
-                title="FourthDemoPage:" onClick={(() => setDisplay('FourthDemoPage:'))}
-                > Next: 
-            </button>
-        </>
-    )
-}
-
-const FourthDemoPage = ({ setDisplay }) => {
-    return (
-        <>
-            {/*  Put the little gear icon here */}
-            <h1> Settings </h1>
-            <h3> The second from last icon you see looks like a gear, and this is your user settings.
-                 Here, you can edit your name, email, or permanently delete your account.
-                 There is also an option here for you to email us any suggestions, from adding an interest field to any feedback for the app!
-            </h3>
-            <button
-                className="me-2"
-                title="FifthDemoPage:" onClick={(() => setDisplay('FifthDemoPage:'))}
-                > Next: 
-                </button>
-        </>
-    )
-}
-
-const FifthDemoPage = ({ setDisplay }) => {
-    return (
-        <>
-            {/*  Put the little gear icon here */}
-            <h1> All Done! </h1>
-            <h3> Thank you for completing that short demo. Now we are going to move on to the first real aspect of building your profile, the interest inventory!
-                You will select up to 15 interests from our long list, and we will use that to filter your matches.
-                You will automatically see people first who have the most shared interest with you. 
-                And don't worry, you can always update your interests in the profile portal!
-            </h3>
-            <button
                 className="me-2"
                 title="AddInterestDisplay:" onClick={(() => setDisplay('AddInterestDisplay:'))}
                 > Next: 
@@ -156,7 +65,8 @@ const AddInterestDisplay = ({ setDisplay }) => {
     const handleSubmit = async () => {
         try {
             await Promise.all(selectedInterests.map(interest =>
-                createInterestInventory({ context, interest: interest.interests })
+                createInterestInventory({ context, interest: interest.interests }),
+                setDisplay('AddAnswerDisplay:')
             ))
         } catch (error) {
             console.error('Failed to submit interests:', error)
@@ -189,31 +99,150 @@ const AddInterestDisplay = ({ setDisplay }) => {
                 <div>No interests found</div>
             )}
         </div>
-    );
-};
+    )
+}
+
+
 
 const AddAnswerDisplay = ({ setDisplay }) => {
     const { context } = useContext(Context)
     const [questionList, setQuestionList] = useState([])
+    const [question, setQuestion] = useState('')
+    const [answer, setAnswer] = useState('')
+    const [image, setImage] = useState(null)
 
+
+    //fetch match profile questions when the page loads, going to put them in a drop down
     useEffect(() => {
         const fetchQuestions = async () => {
             try {
                 const response = await getQuestions({ context })
                 setQuestionList(response.data)
             } catch (error) {
-                console.error('Failed to fetch interests:', error)
+                console.error('Failed to fetch questions:', error)
             }
         }
         fetchQuestions();
     }, [context]);
 
+
     console.log('QUESTION LIST: ', questionList)
 
+    //handle submit function for the answers
+    const handleSubmit = async () => {
+        const formData = new FormData();
+        formData.append('question', question);
+        formData.append('answer', answer);
+        if (image) {
+            formData.append('image_answer', image);
+        }
+    
+        try {
+            await createAnswer({ context, formData });
+            setDisplay('CreateMatchProfile');
+        } catch (error) {
+            console.error('Failed to create answer:', error);
+        }
+    }
+
     return (
-        <> Lets make some answers </>
+        <div>
+        <h3>Build Out Your Profile By Answering a Few Questions!</h3>
+        <form onSubmit={handleSubmit}>
+            <div>
+                <label>Question:</label>
+                <select value={question} onChange={(e) => setQuestion(e.target.value)}>
+                    {questionList.map(q => (
+                        <option key={q.id} value={q.question}>{q.question}</option>
+                    ))}
+                </select>
+            </div>
+            <div>
+                <label>Answer:</label>
+                <input type="text" value={answer} onChange={(e) => setAnswer(e.target.value)} />
+            </div>
+            <div>
+                <label>Image:</label>
+                <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
     )
 }
+
+// work on this after the match answers 
+// const CreateMatchProfile = ({ setDisplay }) => {
+//     const [displayName, setDisplayName] = useState('')
+//     const [bio, setBio] = useState('')
+//     const [city, setCity] = useState('')
+//     const [stateLocation, setStateLocation] = useState('')
+//     const [profilePhoto, setProfilePhoto] = useState('')
+//     // const navigate = useNavigate()
+
+//     const submit = () => {
+//         createMatchProfile({ displayName, bio, city, stateLocation, profilePhoto })
+//         .then(response => {
+//             console.log('CREATE MATCH PROFILE: RESPONSE: ', response)
+//             // navigate('/Demo')
+//           })
+//           .catch(error => console.log('CREATE MATCH PROFILE: ', error))
+//           // navigate('/CreateUser')
+//         }
+    
+//       return (
+//           <Container>
+//             <Row className="justify-content-center m-3">
+//               <Col xs={12} md={8} className="d-flex flex-column justify-content-between text-center MainBody">
+//                 <div className="overflow-scroll" style={{height: "75vh"}}>
+//                   <h1>Your Match Profile</h1>
+//                   <div>
+//                     <div>Display Name:</div>
+//                     <input 
+//                     onChange={(e) => setDisplayName(e.target.value)}
+//                     value={displayName}
+//                     />
+//                   </div>
+//                   <div>
+//                     <div>Bio:</div>
+//                     <input 
+//                     onChange={(e) => setBio(e.target.value)}
+//                     value={bio}
+//                     />
+//                   </div>
+
+//                   <div> Profile Photo: 
+//                     <br />
+
+//                   <input 
+//                     type="file"
+//                     accept='image/*'
+//                     onChange={(e) => setProfilePhoto(e.target.files[0])}
+//                   />
+//                   </div>
+//                   <div style={{ marginTop: 20 }}>
+//                     <button onClick={() => submit()}>Create Match Display</button>
+//                   </div>
+//                   <div>
+//                     <div>City:</div>
+//                     <input 
+//                     onChange={(e) => setCity(e.target.value)}
+//                     value={city}
+//                     />
+//                   </div>
+//                   <div>
+//                     <div>State:</div>
+//                     <input 
+//                     onChange={(e) => setStateLocation(e.target.value)}
+//                     value={stateLocation}
+//                     />
+//                   </div>
+//                 </div>
+//               </Col>
+//             </Row>
+//           </Container>
+//   )
+// }
 
 
 function Demo() {
@@ -230,12 +259,8 @@ function Demo() {
                 <div className="overflow-scroll" style={{height: "75vh"}}>
                   <div>
                     {display === "InitialDisplay:" && <InitialDisplay setDisplay={setDisplay} />}
-                    {display === "FirstDemoPage:" && <FirstDemoPage setDisplay={setDisplay} />}
-                    {display === "SecondDemoPage:" && <SecondDemoPage setDisplay={setDisplay} />}
-                    {display === "ThirdDemoPage:" && <ThirdDemoPage setDisplay={setDisplay} />}
-                    {display === "FourthDemoPage:" && <FourthDemoPage setDisplay={setDisplay} />}
-                    {display === "FifthDemoPage:" && <FifthDemoPage setDisplay={setDisplay} />}
                     {display === "AddInterestDisplay:" && <AddInterestDisplay setDisplay={setDisplay} />}
+                    {display === "AddAnswerDisplay:" && <AddAnswerDisplay setDisplay={setDisplay} />}
                   </div>
                 </div>
               </Col>

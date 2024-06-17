@@ -22,6 +22,8 @@ import CreateUser from './Pages/CreateUser.jsx';
 import ProfilePortal from './Pages/ProfilePortal.jsx';
 import Demo from './Pages/Demo.jsx';
 import MyNavBar from './NavBar.jsx';
+import UserSettings from './Pages/UserSettings.jsx';
+import MessageChannel from './Pages/MessageChannel.jsx';
 
 // import Reducer
 import { displayReducer, initialState } from './DisplayReducer.js';
@@ -80,6 +82,14 @@ const router = createBrowserRouter([
       {
         path: '/Demo',
         element: <Protected component={<Demo />} />
+      },
+      {
+        path: '/UserSettings',
+        element: <Protected component={<UserSettings />} />
+      },
+      {
+        path: '/MessageChannel',
+        element: <Protected component={<MessageChannel />} />
       },
     ]
   }

@@ -1,28 +1,27 @@
 import './NavBarStyle.css'
 import React from "react";
-import { Link } from "react-router-dom";
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import NavbarCollapse from 'react-bootstrap/NavbarCollapse'
 import { useState, useContext } from 'react'
 import Logo from './assets/GalPalLogo.png'
 import { Context } from './Context'
+import { Link, useLocation  } from "react-router-dom"
 
 
 
-//I think I want to put the log out button on a page in settings?
+
 function MyNavBar() {
-  const { context } = useContext(Context)
-  
-  // this will both clear the local storage and also take away the access token!
-  const logOut = () => {
-    localStorage.clear("token")
-    auth.setAccessToken('')
-    localStorage.clear("user")
-    auth.setUser('')
-    console.log('LOGGED OUT: SUCCESS')
+  const location = useLocation()
+  // basically this is going to remove the nav bar from showing up on these pages 
+  if(location.pathname === '/' ||
+    location.pathname === '/CreateUser' ||
+    location.pathname === '/Demo' ||
+    location.pathname === '/LogIn' 
+  ) {
+    return null; // Doesn't show the header on these pages
   }
-
+  else {
   return (
       <>
     <Navbar className="">
@@ -45,17 +44,18 @@ function MyNavBar() {
         <Link className="nav-link" to='/ProfilePortal'>Matches</Link> 
         </Navbar.Text>
 
-        <Navbar.Text className="nav-link me-2 justify-content-end">
-        <Link className="nav-link" to='/'>Settings</Link> 
+        <Navbar.Text className="nav-out me-2">
+        <Link className="nav-link" to='/MessageChannel'>Messages</Link> 
         </Navbar.Text>
 
-        <Navbar.Text className="nav-out me-2">
-          <button className="navbutton" onClick={() => logOut()}>Log Out</button>
+        <Navbar.Text className="nav-link me-2 justify-content-end">
+        <Link className="nav-link" to='/UserSettings'>Settings</Link> 
         </Navbar.Text>
       </Container>
     </Navbar>
   </>
   )
+}
 }
 
 export default MyNavBar

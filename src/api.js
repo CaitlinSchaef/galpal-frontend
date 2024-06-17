@@ -1,8 +1,10 @@
 import axios from 'axios'
-
+import { useNavigate } from 'react-router-dom'
 // const baseUrl = 'https://galpal-backend.fly.dev/'
 const baseUrl = 'http://127.0.0.1:8000/'
 
+// i am going to set the navigates on success
+const navigate = useNavigate()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //User stuff
 
@@ -39,7 +41,7 @@ export const fetchUser = ({ context }) => {
   }
 
 //Create New User
-export const createUser = ({ username, password, firstName, lastName, displayName, bio, email, phone, city, stateLocation, profilePhoto }) => {
+export const createUser = ({ username, password, firstName, lastName,  email}) => {
     axios({
       method: 'post',
       url: `${baseUrl}create-user/`, 
@@ -51,16 +53,11 @@ export const createUser = ({ username, password, firstName, lastName, displayNam
         password: password,
         first_name: firstName,
         last_name: lastName,
-        display_name: displayName,
-        bio,
         email,
-        phone,
-        city,
-        state: stateLocation,
-        profile_photo: profilePhoto,
       }
     }).then(response => {
       console.log('CREATE USER: ', response)
+      navigate('/Demo')
     })
     .catch(error => {
       console.log('CREATE USER ERROR: ', error)
@@ -105,17 +102,16 @@ export const getAnswers = ({ context }) => {
 
 // Create Match Profile Answers
 export const createAnswer = ({ context, question, answer, image, }) => {
-  console.log('THIS IS THE SUBMISSION: ', postCategory)  
   return axios({
       method: 'post',
       url: `${baseUrl}create-answer/`,
       headers: {
-        Authorization: `Bearer ${auth.accessToken}`,
+        Authorization: `Bearer ${context.accessToken}`,
         'Content-Type': 'multipart/form-data'
       },
       data: {
-         question: postSubCategory, 
-         answer: postBody, 
+         question, 
+         answer, 
          image_answer: image
       }
     })
@@ -126,6 +122,44 @@ export const createAnswer = ({ context, question, answer, image, }) => {
       console.log('CREATE ANSWER ERROR: ', error)
     })
   }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Match Profile Display
+
+// Create Match Profile Display
+export const createMatchProfile = ({ context, displayName, bio, city, stateLocation, profilePhoto }) => {
+  axios({
+    method: 'post',
+    url: `${baseUrl}create-match-profile/`, 
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`,
+    },
+    data: {
+      display_name: displayName,
+      bio,
+      city,
+      state: stateLocation,
+      profile_photo: profilePhoto,
+    }
+  }).then(response => {
+    console.log('CREATE MATCH PROFILE: ', response)
+  })
+  .catch(error => {
+    console.log('CREATE MATCH PROFILE: ', error)
+  })
+}
+
+//Get Match Profile Display
+export const getMatchProfile = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-match-profile`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  })
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Match Requests
@@ -194,6 +228,7 @@ export const getInterestInventory = ({ context }) => {
     console.log('GET INTEREST INVENTORY ERROR: ', error)
   })
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Message Channels

@@ -16,8 +16,11 @@ const Body = () => {
     minBreakpoint="xs"
     >
       <Container>
+        <br/>
         <Row className="justify-content-center">
-          <Col xs={6} md={3} className="justify-content-center">
+          <Col xs={6} md={3} className="justify-content-center mt-5">
+                <br/>
+                <br/>
                 <Link to ='/LogIn'>
                 <img
                   alt=""
