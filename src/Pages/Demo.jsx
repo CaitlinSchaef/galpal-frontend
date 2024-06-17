@@ -5,7 +5,7 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { getInterests, createInterestInventory, getQuestions, createMatchProfile } from "../api"
+import { getInterests, createInterestInventory, getQuestions, createMatchProfile, createAnswer } from "../api"
 import { Context } from "../Context"
 
 
@@ -105,11 +105,11 @@ const AddInterestDisplay = ({ setDisplay }) => {
 
 
 const AddAnswerDisplay = ({ setDisplay }) => {
+    //I'm going to submit stuff in a form, so got rid of the data keys state
     const { context } = useContext(Context)
     const [questionList, setQuestionList] = useState([])
-    const [question, setQuestion] = useState('')
-    const [answer, setAnswer] = useState('')
-    const [image, setImage] = useState(null)
+    const [forms, setForms] = useState([])
+    const [formCount, setFormCount] = useState(0)
 
 
     //fetch match profile questions when the page loads, going to put them in a drop down
@@ -122,55 +122,125 @@ const AddAnswerDisplay = ({ setDisplay }) => {
                 console.error('Failed to fetch questions:', error)
             }
         }
-        fetchQuestions();
-    }, [context]);
+        fetchQuestions()
+    }, [context])
 
 
     console.log('QUESTION LIST: ', questionList)
 
-    //handle submit function for the answers
-    const handleSubmit = async () => {
-        const formData = new FormData();
-        formData.append('question', question);
-        formData.append('answer', answer);
-        if (image) {
-            formData.append('image_answer', image);
+    // limit to 5 answers 
+    const addForm = () => {
+        if (formCount < 5) {
+            // assign data keys here, image is set to null as a default 
+            setForms([...forms, { question: '', answer: '', image: null }])
+            setFormCount(formCount + 1)
+        } else {
+            // let them know they've reached their limit
+            alert('You can only add up to 5 answers!')
         }
-    
-        try {
-            await createAnswer({ context, formData });
-            setDisplay('CreateMatchProfile');
-        } catch (error) {
-            console.error('Failed to create answer:', error);
+    };
+
+    // Remove a form by it's index so that if you want to change it you can 
+    const removeForm = (index) => {
+        const newForms = forms.filter((_, i) => i !== index)
+        setForms(newForms)
+        setFormCount(formCount - 1)
+    };
+
+    // have to handle the drop down input changing so that I can set it as a value and it doesn't log it as blank 
+    const handleInputChange = (index, event) => {
+        const { name, value, files } = event.target
+        const newForms = [...forms]
+        if (name === 'image') {
+            newForms[index][name] = files[0]
+        } else {
+            newForms[index][name] = value
         }
+        setForms(newForms)
     }
+
+    // this is the actual submit to create the answers 
+    const handleSubmit = async (e) => {
+        //have to put this in to stop the normal form defaults
+        e.preventDefault()
+        const promises = forms.map(async (form) => {
+            const formData = new FormData()
+            formData.append('question', form.question)
+            formData.append('answer', form.answer)
+            if (form.image) {
+                formData.append('image_answer', form.image)
+            }
+
+            // Log the form data, this is what is being sent, set it up to show data key and what is being sent
+            for (let [key, value] of formData.entries()) { 
+                console.log(key, ':', value)
+            }
+
+            return createAnswer({ context, formData })
+        })
+
+        try {
+            await Promise.all(promises);
+            console.log('All forms submitted successfully')
+            setDisplay('CreateMatchProfile:')
+        } catch (error) {
+            console.error('Failed to submit forms:', error)
+        }
+    };
 
     return (
         <div>
-        <h3>Build Out Your Profile By Answering a Few Questions!</h3>
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Question:</label>
-                <select value={question} onChange={(e) => setQuestion(e.target.value)}>
-                    {questionList.map(q => (
-                        <option key={q.id} value={q.question}>{q.question}</option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <label>Answer:</label>
-                <input type="text" value={answer} onChange={(e) => setAnswer(e.target.value)} />
-            </div>
-            <div>
-                <label>Image:</label>
-                <input type="file" onChange={(e) => setImage(e.target.files[0])} />
-            </div>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+            <h3>Build Out Your Profile By Answering a Few Questions!</h3>
+            <h5>Add up to 5 answers!</h5>
+            <button onClick={addForm}>Add Question/Answer</button>
+            {forms.map((form, index) => (
+                <div key={index}>
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label>Question:</label>
+                            <select
+                                name="question"
+                                value={form.question}
+                                onChange={(e) => handleInputChange(index, e)}
+                            >
+                                {/* no value here because it's just the display */}
+                                <option value="">Select a question</option>
+                                {/* map over the list of questions we got earlier */}
+                                {questionList.map(q => (
+                                    <option key={q.id} value={q.question}>{q.question}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label>Answer:</label>
+                            <input
+                                type="text"
+                                name="answer"
+                                value={form.answer}
+                                onChange={(e) => handleInputChange(index, e)}
+                            />
+                        </div>
+                        {/* this is something that sets the display to show a file input if the question has an image, this was hard!! */}
+                        {form.question.includes('picture') && (
+                            <div>
+                                <label>Image:</label>
+                                <input
+                                    type="file"
+                                    name="image"
+                                    onChange={(e) => handleInputChange(index, e)}
+                                />
+                            </div>
+                        )}
+                        {/* this button will remove the question if they change their mind */}
+                        <button type="button" onClick={() => removeForm(index)}>Remove</button>
+                    </form>
+                </div>
+            ))}
+            <button type="submit" onClick={handleSubmit}>Submit Your Answers</button>
+        </div>
     )
 }
-
+// you need to set this display in the return function at bottom for the last page 
 // work on this after the match answers 
 // const CreateMatchProfile = ({ setDisplay }) => {
 //     const [displayName, setDisplayName] = useState('')
@@ -191,10 +261,7 @@ const AddAnswerDisplay = ({ setDisplay }) => {
 //         }
     
 //       return (
-//           <Container>
-//             <Row className="justify-content-center m-3">
-//               <Col xs={12} md={8} className="d-flex flex-column justify-content-between text-center MainBody">
-//                 <div className="overflow-scroll" style={{height: "75vh"}}>
+//           <>
 //                   <h1>Your Match Profile</h1>
 //                   <div>
 //                     <div>Display Name:</div>
@@ -238,9 +305,7 @@ const AddAnswerDisplay = ({ setDisplay }) => {
 //                     />
 //                   </div>
 //                 </div>
-//               </Col>
-//             </Row>
-//           </Container>
+//               </>
 //   )
 // }
 

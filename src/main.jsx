@@ -24,6 +24,7 @@ import Demo from './Pages/Demo.jsx';
 import MyNavBar from './NavBar.jsx';
 import UserSettings from './Pages/UserSettings.jsx';
 import MessageChannel from './Pages/MessageChannel.jsx';
+import Testing from './Pages/TestingFunctions.jsx';
 
 // import Reducer
 import { displayReducer, initialState } from './DisplayReducer.js';
@@ -90,6 +91,10 @@ const router = createBrowserRouter([
       {
         path: '/MessageChannel',
         element: <Protected component={<MessageChannel />} />
+      },
+      {
+        path: '/Testing',
+        element: <Protected component={<Testing />} />
       },
     ]
   }

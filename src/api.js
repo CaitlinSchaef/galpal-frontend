@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 const baseUrl = 'http://127.0.0.1:8000/'
 
 // i am going to set the navigates on success
-const navigate = useNavigate()
+// const navigate = useNavigate()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //User stuff
 
@@ -101,7 +101,7 @@ export const getAnswers = ({ context }) => {
 }
 
 // Create Match Profile Answers
-export const createAnswer = ({ context, question, answer, image, }) => {
+export const createAnswer = ({ context, formData }) => {
   return axios({
       method: 'post',
       url: `${baseUrl}create-answer/`,
@@ -109,11 +109,7 @@ export const createAnswer = ({ context, question, answer, image, }) => {
         Authorization: `Bearer ${context.accessToken}`,
         'Content-Type': 'multipart/form-data'
       },
-      data: {
-         question, 
-         answer, 
-         image_answer: image
-      }
+      data: formData
     })
     .then(response => {
       console.log('CREATE ANSWER: ', response)
@@ -121,7 +117,7 @@ export const createAnswer = ({ context, question, answer, image, }) => {
     .catch(error => {
       console.log('CREATE ANSWER ERROR: ', error)
     })
-  }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Match Profile Display
@@ -133,6 +129,7 @@ export const createMatchProfile = ({ context, displayName, bio, city, stateLocat
     url: `${baseUrl}create-match-profile/`, 
     headers: {
       Authorization: `Bearer ${context.accessToken}`,
+      'Content-Type': 'multipart/form-data'
     },
     data: {
       display_name: displayName,

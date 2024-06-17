@@ -7,9 +7,12 @@ import { useState, useContext } from 'react'
 import Logo from './assets/GalPalLogo.png'
 import { Context } from './Context'
 import { Link, useLocation  } from "react-router-dom"
+import { FaEnvelope } from "react-icons/fa6";
+import { FaGear } from "react-icons/fa6";
+import { FaPuzzlePiece } from "react-icons/fa6";
 
 
-
+{/* <FaEnvelope />  <FaGear /> <FaPuzzlePiece /> */}
 
 function MyNavBar() {
   const location = useLocation()
@@ -27,7 +30,7 @@ function MyNavBar() {
     <Navbar className="">
       <Container>
         <Navbar.Brand>
-          <Link className="nav-link" to='/'>
+          <Link className="nav-link" to='/ProfilePortal'>
           <div className="rounded-circle">
           <img
               alt=""
@@ -41,15 +44,33 @@ function MyNavBar() {
         </Navbar.Brand>
 
         <Navbar.Text className="nav-link me-2 justify-content-end">
-        <Link className="nav-link" to='/ProfilePortal'>Matches</Link> 
+        <Link className="nav-link" to='/Matching'>
+          <a
+          className="iconReact"
+          >
+          <FaPuzzlePiece /> 
+          </a>
+        </Link> 
         </Navbar.Text>
 
         <Navbar.Text className="nav-out me-2">
-        <Link className="nav-link" to='/MessageChannel'>Messages</Link> 
+        <Link className="nav-link" to='/MessageChannel'>
+          <a
+          className="iconReact"
+          >
+          <FaEnvelope />
+          </a>
+        </Link> 
         </Navbar.Text>
 
         <Navbar.Text className="nav-link me-2 justify-content-end">
-        <Link className="nav-link" to='/UserSettings'>Settings</Link> 
+        <Link className="nav-link" to='/UserSettings'>
+          <a
+          className="iconReact"
+          >
+          <FaGear />
+          </a>
+        </Link> 
         </Navbar.Text>
       </Container>
     </Navbar>
