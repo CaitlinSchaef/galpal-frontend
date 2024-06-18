@@ -9,18 +9,10 @@ const baseUrl = 'http://127.0.0.1:8000/'
 //User stuff
 
 // Get access token (this happens on user log in):
-export const getToken = ({ context, username, password }) => {
+export const getToken = ({ username, password }) => {
     return axios.post(`${baseUrl}token/`, {
         username: username,
         password: password
-    }).then(response => {
-        console.log('TOKEN RESPONSE: ', response)
-        return response
-        // context.setAccessToken(response.data.access)
-        // context.setUser(username)
-    }).catch(error => {
-        console.log('TOKEN GRAB ERROR: ', error)
-        context.setAccessToken(undefined)
     })
 }
 
@@ -43,7 +35,7 @@ export const fetchUser = ({ context }) => {
 
 //Create New User
 export const createUser = ({ username, password, firstName, lastName,  email}) => {
-    axios({
+    return axios({
       method: 'post',
       url: `${baseUrl}create-user/`, 
       headers: {
@@ -56,12 +48,6 @@ export const createUser = ({ username, password, firstName, lastName,  email}) =
         last_name: lastName,
         email,
       }
-    }).then(response => {
-      console.log('CREATE USER: ', response)
-      navigate('/Demo')
-    })
-    .catch(error => {
-      console.log('CREATE USER ERROR: ', error)
     })
   }
 

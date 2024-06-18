@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { createUser } from "../api"
-
+import { createUser, getToken } from "../api"
+import { Context } from '../Context'
 
 
 const Body = () => {
+    const { context } = useContext(Context)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [firstName, setFirstName] = useState('')
@@ -16,14 +17,24 @@ const Body = () => {
     const [email, setEmail] = useState('')
     const navigate = useNavigate()
 
+
+
     const submit = () => {
         createUser({ username, password, firstName, lastName, email })
         .then(response => {
-            console.log('CREATE NEW USER: RESPONSE: ', response)
-            navigate('/Demo')
+          console.log('CREATE NEW USER: RESPONSE: ', response)
+          getToken({context, username, password})
+            .then(response => {
+              console.log('LOG IN RESPONSE: ', response)
+              context.setAccessToken(response.data.access)
+              context.setUser(username)
+              navigate('/Demo')
+            })
           })
-          .catch(error => console.log('CREATE NEW USER ERROR: ', error))
-          navigate('/CreateUser')
+          .catch(error => {
+            console.log('CREATE NEW USER ERROR: ', error)
+            context.setAccessToken(undefined)
+          })
         }
     
       return (

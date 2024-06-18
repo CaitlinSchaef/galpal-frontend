@@ -1,5 +1,5 @@
 // build interest inventory and profile builder here?
-
+import { Link, useNavigate } from 'react-router-dom'
 import { useState, useContext, useEffect } from "react"
 import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
