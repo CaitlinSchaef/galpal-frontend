@@ -6,7 +6,7 @@
 function Matching(){
     return(
         <div>
-            This is the profile portal
+            This is the matching portal
         </div>
     )
 }

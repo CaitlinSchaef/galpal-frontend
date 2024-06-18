@@ -18,6 +18,10 @@ const Body = () => {
     const [profilePhoto, setProfilePhoto] = useState('')
     // const navigate = useNavigate()
 
+    //maybe I need to set it like {AL: AL}
+    const states = [AL, AK, AZ, AR, CA, CO, CT, DE, DC, FL, GA, HI, ID, IL, IN, IA, KS, KY, 
+        LA, ME, MD, MA, MI, MN, MS, MO, MT, NE, NV, NH, NJ, NM, NY, NC, ND, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VT, VA, WA, WV, WI, WY]
+
     const submit = () => {
         createMatchProfile({ context, displayName, bio, city, stateLocation, profilePhoto })
         .then(response => {
@@ -61,11 +65,22 @@ const Body = () => {
                     />
                     </div>
                     <div>
-                    <div>State:</div>
+                        <label>
+                            State: 
+                            {states.map((state) => 
+                            <select name="state">
+                                <option
+                                onChange={(e) => setStateLocation(e.target.value)}
+                                value={ stateLocation }
+                                >{state.states}</option>
+                            </select>
+                            )}
+                        </label>
+                    {/* <div>State:</div>
                     <input 
                     onChange={(e) => setStateLocation(e.target.value)}
                     value={stateLocation}
-                    />
+                    />*/}
                     </div>
                     <div style={{ marginTop: 20 }}>
                     <button onClick={() => submit()}>Create Match Display</button>

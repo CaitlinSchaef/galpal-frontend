@@ -102,7 +102,10 @@ const AddInterestDisplay = ({ setDisplay }) => {
     )
 }
 
-
+// const CreateMatchProfile = ({ setDisplay }) => {
+//     
+//     
+// }
 
 const AddAnswerDisplay = ({ setDisplay }) => {
     //I'm going to submit stuff in a form, so got rid of the data keys state
@@ -240,74 +243,7 @@ const AddAnswerDisplay = ({ setDisplay }) => {
         </div>
     )
 }
-// you need to set this display in the return function at bottom for the last page 
-// work on this after the match answers 
-// const CreateMatchProfile = ({ setDisplay }) => {
-//     const [displayName, setDisplayName] = useState('')
-//     const [bio, setBio] = useState('')
-//     const [city, setCity] = useState('')
-//     const [stateLocation, setStateLocation] = useState('')
-//     const [profilePhoto, setProfilePhoto] = useState('')
-//     // const navigate = useNavigate()
 
-//     const submit = () => {
-//         createMatchProfile({ displayName, bio, city, stateLocation, profilePhoto })
-//         .then(response => {
-//             console.log('CREATE MATCH PROFILE: RESPONSE: ', response)
-//             // navigate('/Demo')
-//           })
-//           .catch(error => console.log('CREATE MATCH PROFILE: ', error))
-//           // navigate('/CreateUser')
-//         }
-    
-//       return (
-//           <>
-//                   <h1>Your Match Profile</h1>
-//                   <div>
-//                     <div>Display Name:</div>
-//                     <input 
-//                     onChange={(e) => setDisplayName(e.target.value)}
-//                     value={displayName}
-//                     />
-//                   </div>
-//                   <div>
-//                     <div>Bio:</div>
-//                     <input 
-//                     onChange={(e) => setBio(e.target.value)}
-//                     value={bio}
-//                     />
-//                   </div>
-
-//                   <div> Profile Photo: 
-//                     <br />
-
-//                   <input 
-//                     type="file"
-//                     accept='image/*'
-//                     onChange={(e) => setProfilePhoto(e.target.files[0])}
-//                   />
-//                   </div>
-//                   <div style={{ marginTop: 20 }}>
-//                     <button onClick={() => submit()}>Create Match Display</button>
-//                   </div>
-//                   <div>
-//                     <div>City:</div>
-//                     <input 
-//                     onChange={(e) => setCity(e.target.value)}
-//                     value={city}
-//                     />
-//                   </div>
-//                   <div>
-//                     <div>State:</div>
-//                     <input 
-//                     onChange={(e) => setStateLocation(e.target.value)}
-//                     value={stateLocation}
-//                     />
-//                   </div>
-//                 </div>
-//               </>
-//   )
-// }
 
 
 function Demo() {

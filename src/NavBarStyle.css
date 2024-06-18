@@ -22,9 +22,11 @@
     color: #2F39C5;
   }
 
-  .iconReact {
-    font-size: 1rem;
+  .react-icons {
+    font-size: 1.5rem;
     color: #2F39C5;
+    vertical-align: middle;
+    justify-content: end;
   }
 /* 
 Palette:

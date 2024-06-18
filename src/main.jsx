@@ -24,6 +24,7 @@ import Demo from './Pages/Demo.jsx';
 import MyNavBar from './NavBar.jsx';
 import UserSettings from './Pages/UserSettings.jsx';
 import MessageChannel from './Pages/MessageChannel.jsx';
+import Matching from './Pages/Matching.jsx';
 import Testing from './Pages/TestingFunctions.jsx';
 
 // import Reducer
@@ -91,6 +92,10 @@ const router = createBrowserRouter([
       {
         path: '/MessageChannel',
         element: <Protected component={<MessageChannel />} />
+      },
+      {
+        path: '/Matching',
+        element: <Protected component={<Matching />} />
       },
       {
         path: '/Testing',

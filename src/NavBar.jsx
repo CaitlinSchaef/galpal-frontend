@@ -10,9 +10,11 @@ import { Link, useLocation  } from "react-router-dom"
 import { FaEnvelope } from "react-icons/fa6";
 import { FaGear } from "react-icons/fa6";
 import { FaPuzzlePiece } from "react-icons/fa6";
+import { IconContext } from "react-icons";
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 
-{/* <FaEnvelope />  <FaGear /> <FaPuzzlePiece /> */}
 
 function MyNavBar() {
   const location = useLocation()
@@ -35,43 +37,39 @@ function MyNavBar() {
           <img
               alt=""
               src={Logo}
-              width="60"
-              height="60"
+              width="70"
+              height="70"
               className="d-inline-block m-auto"
             />
             </div>
           </Link>
         </Navbar.Brand>
 
-        <Navbar.Text className="nav-link me-2 justify-content-end">
+        <div className='justify-content-end align-items-center'>
+        <Navbar.Text className="nav-link">
         <Link className="nav-link" to='/Matching'>
-          <a
-          className="iconReact"
-          >
-          <FaPuzzlePiece /> 
-          </a>
+          <IconContext.Provider value={{ className: 'react-icons' }}>
+            <FaPuzzlePiece /> 
+          </IconContext.Provider>
         </Link> 
         </Navbar.Text>
 
-        <Navbar.Text className="nav-out me-2">
+        <Navbar.Text className="nav-out">
         <Link className="nav-link" to='/MessageChannel'>
-          <a
-          className="iconReact"
-          >
+        <IconContext.Provider value={{ className: 'react-icons' }}>
           <FaEnvelope />
-          </a>
+        </IconContext.Provider>
         </Link> 
         </Navbar.Text>
-
-        <Navbar.Text className="nav-link me-2 justify-content-end">
+        
+        <Navbar.Text className="nav-link">
         <Link className="nav-link" to='/UserSettings'>
-          <a
-          className="iconReact"
-          >
+        <IconContext.Provider value={{ className: 'react-icons' }}>
           <FaGear />
-          </a>
+          </IconContext.Provider>
         </Link> 
         </Navbar.Text>
+        </div>
       </Container>
     </Navbar>
   </>
