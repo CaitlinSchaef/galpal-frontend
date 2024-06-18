@@ -1,7 +1,12 @@
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+
 // const baseUrl = 'https://galpal-backend.fly.dev/'
-const baseUrl = 'http://127.0.0.1:8000/'
+// const baseUrl = 'http://127.0.0.1:8000/'
+const baseUrl = import.meta.env.VITE_BASE_URL
+console.log('BASE URL: ', baseUrl)
+
+
 
 // i am going to set the navigates on success
 // const navigate = useNavigate()
@@ -17,7 +22,7 @@ export const getToken = ({ username, password }) => {
 }
 
 // Fetch User Profile:
-export const fetchUser = ({ context }) => {
+export const getUser = ({ context }) => {
     axios({
       method: 'get',
       url: `${baseUrl}profile/`, 

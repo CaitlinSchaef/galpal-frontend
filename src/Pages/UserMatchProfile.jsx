@@ -1,32 +1,75 @@
 // this page is a display of the current logged in user's profile where they'll be able to view and update it
 
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState, useContext, useEffect } from "react"
 import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { createPost, fetchUser, getPosts } from "../api"
-import Form from 'react-bootstrap/Form';
-import { context } from "../Context"
-import { useContext, useEffect } from 'react'
+import { getUser, getMatchProfile, getAnswers } from "../api"
+import { Context } from "../Context"
+import Image from 'react-bootstrap/Image';
 
 
-const UserProfileDisplay = () => {
+// <img src={`http://127.0.0.1:8000${profilePhoto}`} width="250"
+//                 height="250" alt="Profile Photo" />
+
+const Body = () => {
     const { context } = useContext(Context)
-    const [profile, setProfile] = useState()
+    const [userProfile, setUserProfile] = useState()
+    const [name, setName] = useState()
+    const [profilePhoto, setProfilePhoto] = useState()
+    const [bio, setBio] = useState()
+    const [city, setCity] = useState()
+    const [userState, setUserState] = useState()
+    const [answerList, setAnswerList] = useState()
 
     useEffect(() => {
-        const storedUsername = localStorage.getItem('user')
-
-        if (context && storedUsername) {
-            // fetchUser({ context }).then(response => {
-            //     try {
-            //         const userProfile = response.data.filter(profile => profile.user !== null)
-            //     }
-            // })
+        const grabProfile = async () => {
+            try {
+                const response = await getMatchProfile({ context })
+                setUserProfile(response.data)
+                setName(response.data.display_name)
+                setProfilePhoto(response.data.profile_photo)
+                setBio(response.data.bio)
+                setCity(response.data.city)
+                setUserState(response.data.state)
+            } catch (error) {
+                console.error('Failed to fetch user:', error)
+            }
         }
-    })
+        grabProfile()
+    }, [context])
+    
+    console.log('USER Profile: ', userProfile)
+    console.log('NAME: ', name)
+    console.log('BIO: ', bio)
+
+    useEffect(() => {
+        const grabAnswers = async () => {
+            try {
+                const response = await getAnswers({ context })
+                setAnswerList(response.data)
+            } catch (error) {
+                console.error('Failed to fetch answers:', error)
+            }
+        }
+        grabAnswers()
+    }, [context])
+
+    console.log('ANSWER LIST: ', answerList)
+
+    return(
+        <div>
+            <br/>
+            <h1>{name}!</h1>
+            <h4>{bio}</h4>
+            <h5>{city}, {userState}</h5>
+            <br/>
+            <Image src={`http://127.0.0.1:8000${profilePhoto}`} width="271" height="280" roundedCircle/>
+
+        </div>
+    )
 }
 
 
@@ -34,6 +77,7 @@ function UserMatchProfile(){
     return(
         <div>
             This is the place where they can edit or view their match profile
+            <Body />
         </div>
     )
 }

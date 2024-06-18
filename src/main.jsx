@@ -25,7 +25,9 @@ import MyNavBar from './NavBar.jsx';
 import UserSettings from './Pages/UserSettings.jsx';
 import MessageChannel from './Pages/MessageChannel.jsx';
 import Matching from './Pages/Matching.jsx';
-import Testing from './Pages/TestingFunctions.jsx';
+import UserMatchProfile from './Pages/UserMatchProfile.jsx';
+import UserInterestInventory from './Pages/UserInterestInventory.jsx';
+
 
 // import Reducer
 import { displayReducer, initialState } from './DisplayReducer.js';
@@ -98,8 +100,12 @@ const router = createBrowserRouter([
         element: <Protected component={<Matching />} />
       },
       {
-        path: '/Testing',
-        element: <Protected component={<Testing />} />
+        path: '/UserMatchProfile',
+        element: <Protected component={<UserMatchProfile />} />
+      },
+      {
+        path: '/UserInterestInventory',
+        element: <Protected component={<UserInterestInventory />} />
       },
     ]
   }
