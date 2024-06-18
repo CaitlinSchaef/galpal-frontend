@@ -15,8 +15,9 @@ export const getToken = ({ context, username, password }) => {
         password: password
     }).then(response => {
         console.log('TOKEN RESPONSE: ', response)
-        context.setAccessToken(response.data.access)
-        context.setUser(username)
+        return response
+        // context.setAccessToken(response.data.access)
+        // context.setUser(username)
     }).catch(error => {
         console.log('TOKEN GRAB ERROR: ', error)
         context.setAccessToken(undefined)
@@ -123,8 +124,9 @@ export const createAnswer = ({ context, formData }) => {
 // Match Profile Display
 
 // Create Match Profile Display
+//took out the .then and .catch here because I'm doing it in the function
 export const createMatchProfile = ({ context, displayName, bio, city, stateLocation, profilePhoto }) => {
-  axios({
+  return axios({
     method: 'post',
     url: `${baseUrl}create-match-profile/`, 
     headers: {
@@ -138,11 +140,6 @@ export const createMatchProfile = ({ context, displayName, bio, city, stateLocat
       state: stateLocation,
       profile_photo: profilePhoto,
     }
-  }).then(response => {
-    console.log('CREATE MATCH PROFILE: ', response)
-  })
-  .catch(error => {
-    console.log('CREATE MATCH PROFILE: ', error)
   })
 }
 

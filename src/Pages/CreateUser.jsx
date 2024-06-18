@@ -14,12 +14,13 @@ const Body = () => {
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [email, setEmail] = useState('')
-    
+    const navigate = useNavigate()
 
     const submit = () => {
         createUser({ username, password, firstName, lastName, email })
         .then(response => {
             console.log('CREATE NEW USER: RESPONSE: ', response)
+            navigate('/Demo')
           })
           .catch(error => console.log('CREATE NEW USER ERROR: ', error))
           navigate('/CreateUser')

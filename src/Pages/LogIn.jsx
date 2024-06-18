@@ -16,7 +16,14 @@ const Body = () => {
 
   const submit = () => {
     getToken({ context, username, password })
-    navigate('/ProfilePortal')
+    .then(response => {
+      console.log('LOG IN RESPONSE: ', response)
+      // the api should still produce a token console log
+      context.setAccessToken(response.data.access)
+      context.setUser(username)
+      navigate('/ProfilePortal')
+    })
+    .catch(error => console.log('LOG IN ERROR: ', error))
   }
 
   return (

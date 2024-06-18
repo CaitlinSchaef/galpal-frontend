@@ -66,7 +66,7 @@ const AddInterestDisplay = ({ setDisplay }) => {
         try {
             await Promise.all(selectedInterests.map(interest =>
                 createInterestInventory({ context, interest: interest.interests }),
-                setDisplay('AddAnswerDisplay:')
+                setDisplay('CreateMatchProfile:')
             ))
         } catch (error) {
             console.error('Failed to submit interests:', error)
@@ -102,10 +102,131 @@ const AddInterestDisplay = ({ setDisplay }) => {
     )
 }
 
-// const CreateMatchProfile = ({ setDisplay }) => {
-//     
-//     
-// }
+const CreateMatchProfile = ({ setDisplay }) => {
+    const { context } = useContext(Context)
+    const [displayName, setDisplayName] = useState('')
+    const [bio, setBio] = useState('')
+    const [city, setCity] = useState('')
+    const [stateLocation, setStateLocation] = useState('')
+    const [profilePhoto, setProfilePhoto] = useState('')
+    // const navigate = useNavigate()
+
+    //maybe I need to set it like {AL: AL}
+    const states = [{ code: 'AL', name: 'Alabama' },
+        { code: 'AK', name: 'Alaska' },
+        { code: 'AZ', name: 'Arizona' },
+        { code: 'AR', name: 'Arkansas' },
+        { code: 'CA', name: 'California' },
+        { code: 'CO', name: 'Colorado' },
+        { code: 'CT', name: 'Connecticut' },
+        { code: 'DE', name: 'Delaware' },
+        { code: 'DC', name: 'District of Columbia' },
+        { code: 'FL', name: 'Florida' },
+        { code: 'GA', name: 'Georgia' },
+        { code: 'HI', name: 'Hawaii' },
+        { code: 'ID', name: 'Idaho' },
+        { code: 'IL', name: 'Illinois' },
+        { code: 'IN', name: 'Indiana' },
+        { code: 'IA', name: 'Iowa' },
+        { code: 'KS', name: 'Kansas' },
+        { code: 'KY', name: 'Kentucky' },
+        { code: 'LA', name: 'Louisiana' },
+        { code: 'ME', name: 'Maine' },
+        { code: 'MD', name: 'Maryland' },
+        { code: 'MA', name: 'Massachusetts' },
+        { code: 'MI', name: 'Michigan' },
+        { code: 'MN', name: 'Minnesota' },
+        { code: 'MS', name: 'Mississippi' },
+        { code: 'MO', name: 'Missouri' },
+        { code: 'MT', name: 'Montana' },
+        { code: 'NE', name: 'Nebraska' },
+        { code: 'NV', name: 'Nevada' },
+        { code: 'NH', name: 'New Hampshire' },
+        { code: 'NJ', name: 'New Jersey' },
+        { code: 'NM', name: 'New Mexico' },
+        { code: 'NY', name: 'New York' },
+        { code: 'NC', name: 'North Carolina' },
+        { code: 'ND', name: 'North Dakota' },
+        { code: 'OH', name: 'Ohio' },
+        { code: 'OK', name: 'Oklahoma' },
+        { code: 'OR', name: 'Oregon' },
+        { code: 'PA', name: 'Pennsylvania' },
+        { code: 'RI', name: 'Rhode Island' },
+        { code: 'SC', name: 'South Carolina' },
+        { code: 'SD', name: 'South Dakota' },
+        { code: 'TN', name: 'Tennessee' },
+        { code: 'TX', name: 'Texas' },
+        { code: 'UT', name: 'Utah' },
+        { code: 'VT', name: 'Vermont' },
+        { code: 'VA', name: 'Virginia' },
+        { code: 'WA', name: 'Washington' },
+        { code: 'WV', name: 'West Virginia' },
+        { code: 'WI', name: 'Wisconsin' },
+        { code: 'WY', name: 'Wyoming' }
+    ]
+
+    const submit = () => {
+        createMatchProfile({ context, displayName, bio, city, stateLocation, profilePhoto })
+        .then(response => {
+            console.log('CREATE MATCH PROFILE: RESPONSE: ', response)
+            setDisplay('AddAnswerDisplay:')
+            })
+            .catch(error => console.log('CREATE MATCH PROFILE: ', error))
+        }
+
+        return (
+            <div>
+                <h1>Your Match Profile</h1>
+                    <div>
+                    <div>Display Name:</div>
+                        <input 
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        value={displayName}
+                        />
+                        </div>
+                        <div>
+                    <div>Bio:</div>
+                        <input 
+                        onChange={(e) => setBio(e.target.value)}
+                        value={bio}
+                        />
+                    </div>
+                    <div> Profile Photo: 
+                    <br />
+                        <input 
+                        type="file"
+                        accept='image/*'
+                        onChange={(e) => setProfilePhoto(e.target.files[0])}
+                        />
+                    </div>
+                    <div>
+                    <div>City:</div>
+                    <input 
+                    onChange={(e) => setCity(e.target.value)}
+                    value={city}
+                    />
+                    </div>
+                    <div>
+                        <label>
+                            State: <br/>
+                            <select
+                                value={stateLocation}
+                                onChange={(e) => setStateLocation(e.target.value)}
+                            >
+                                {states.map((state) => (
+                                    <option key={state.code} value={state.code}>
+                                        {state.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                    </div>
+                    <div style={{ marginTop: 20 }}>
+                    <button onClick={() => submit()}>Create Your Match Profile</button>
+                    </div>
+            </div>
+    )
+}
 
 const AddAnswerDisplay = ({ setDisplay }) => {
     //I'm going to submit stuff in a form, so got rid of the data keys state
@@ -141,14 +262,14 @@ const AddAnswerDisplay = ({ setDisplay }) => {
             // let them know they've reached their limit
             alert('You can only add up to 5 answers!')
         }
-    };
+    }
 
     // Remove a form by it's index so that if you want to change it you can 
     const removeForm = (index) => {
         const newForms = forms.filter((_, i) => i !== index)
         setForms(newForms)
         setFormCount(formCount - 1)
-    };
+    }
 
     // have to handle the drop down input changing so that I can set it as a value and it doesn't log it as blank 
     const handleInputChange = (index, event) => {
@@ -181,15 +302,14 @@ const AddAnswerDisplay = ({ setDisplay }) => {
 
             return createAnswer({ context, formData })
         })
-
         try {
             await Promise.all(promises);
             console.log('All forms submitted successfully')
-            setDisplay('CreateMatchProfile:')
+            setDisplay('AllDoneDisplay:')
         } catch (error) {
             console.error('Failed to submit forms:', error)
         }
-    };
+    }
 
     return (
         <div>
@@ -244,6 +364,17 @@ const AddAnswerDisplay = ({ setDisplay }) => {
     )
 }
 
+const AllDoneDisplay = () => {
+    return (
+        <>
+             <h1>You're all done!</h1>
+             <Link to ='/ProfilePortal'>
+                <button>To Your Profile</button>
+            </Link>
+        </>
+    )
+}
+
 
 
 function Demo() {
@@ -261,7 +392,9 @@ function Demo() {
                   <div>
                     {display === "InitialDisplay:" && <InitialDisplay setDisplay={setDisplay} />}
                     {display === "AddInterestDisplay:" && <AddInterestDisplay setDisplay={setDisplay} />}
+                    {display === "CreateMatchProfile:" && <CreateMatchProfile setDisplay={setDisplay} />}
                     {display === "AddAnswerDisplay:" && <AddAnswerDisplay setDisplay={setDisplay} />}
+                    {display === "AllDoneDisplay:" && <AllDoneDisplay setDisplay={setDisplay} />}
                   </div>
                 </div>
               </Col>
