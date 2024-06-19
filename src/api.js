@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 // const baseUrl = 'https://galpal-backend.fly.dev/'
 // const baseUrl = 'http://127.0.0.1:8000/'
-const baseUrl = import.meta.env.VITE_BASE_URL
+export const baseUrl = import.meta.env.VITE_BASE_URL
 console.log('BASE URL: ', baseUrl)
 
 
@@ -63,7 +63,7 @@ export const createUser = ({ username, password, firstName, lastName,  email}) =
 export const getQuestions = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}/get-questions`,
+    url: `${baseUrl}get-questions/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -85,7 +85,7 @@ export const getQuestions = ({ context }) => {
 export const getAnswers = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}/get-answers`,
+    url: `${baseUrl}get-answers/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -138,7 +138,7 @@ export const createMatchProfile = ({ context, displayName, bio, city, stateLocat
 export const getMatchProfile = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}/get-match-profile`,
+    url: `${baseUrl}get-match-profile/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -159,7 +159,7 @@ export const getMatchProfile = ({ context }) => {
 export const getInterests = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}/get-interests`,
+    url: `${baseUrl}get-interests/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -200,7 +200,7 @@ export const createInterestInventory = ({ context, interest }) => {
 export const getInterestInventory = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}/get-interest-inventory`,
+    url: `${baseUrl}get-interest-inventory/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -214,9 +214,69 @@ export const getInterestInventory = ({ context }) => {
   })
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Requested Matches
+
+export const getMatchRequests = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}get-match-requests/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  });
+};
+
+export const createMatchRequest = ({ context, data }) => {
+  return axios({
+    method: 'post',
+    url: `${baseUrl}create-match-request/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`,
+      'Content-Type': 'multipart/form-data'
+    },
+    data: data
+  });
+};
+
+// update match request
+export const updateMatchRequest = ({ context, id, data }) => {
+  return axios({
+    method: 'patch',
+    url: `${baseUrl}update-match-request/${id}/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    data: data
+  });
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Message Channels
+export const createMessageChannel = ({ context, data }) => {
+  return axios({
+    method: 'post',
+    url: `${baseUrl}create-message-channel/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`,
+      'Content-Type': 'multipart/form-data'
+    },
+    data: data
+  });
+};
+
+export const addToFriendsList = ({ context, data }) => {
+  return axios({
+    method: 'post',
+    url: `${baseUrl}add-to-friends-list/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`,
+      'Content-Type': 'multipart/form-data'
+    },
+    data: data
+  });
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

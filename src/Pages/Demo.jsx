@@ -5,8 +5,9 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { getInterests, createInterestInventory, getQuestions, createMatchProfile, createAnswer } from "../api"
+import { getInterests, createInterestInventory, getQuestions, createMatchProfile, createAnswer, baseUrl } from "../api"
 import { Context } from "../Context"
+
 
 
 
@@ -44,8 +45,8 @@ const AddInterestDisplay = ({ setDisplay }) => {
                 console.error('Failed to fetch interests:', error)
             }
         }
-        fetchInterests();
-    }, [context]);
+        fetchInterests()
+    }, [context])
 
     console.log('INTEREST LIST: ', interestList)
 
@@ -59,8 +60,8 @@ const AddInterestDisplay = ({ setDisplay }) => {
             } else {
                 return prevSelected
             }
-        });
-    };
+        })
+    }
 
     const handleSubmit = async () => {
         try {
@@ -71,7 +72,7 @@ const AddInterestDisplay = ({ setDisplay }) => {
         } catch (error) {
             console.error('Failed to submit interests:', error)
         }
-    };
+    }
 
     return (
         <div>
@@ -111,7 +112,7 @@ const CreateMatchProfile = ({ setDisplay }) => {
     const [profilePhoto, setProfilePhoto] = useState('')
     // const navigate = useNavigate()
 
-    //maybe I need to set it like {AL: AL}
+    //maybe I need to set it like {AL: AL}, do like a code/key and a name and take the code
     const states = [{ code: 'AL', name: 'Alabama' },
         { code: 'AK', name: 'Alaska' },
         { code: 'AZ', name: 'Arizona' },
@@ -310,57 +311,69 @@ const AddAnswerDisplay = ({ setDisplay }) => {
             console.error('Failed to submit forms:', error)
         }
     }
-
+    // I had to add some formatting in this return because it was just nuts 
     return (
-        <div>
-            <h3>Build Out Your Profile By Answering a Few Questions!</h3>
-            <h5>Add up to 5 answers!</h5>
-            <button onClick={addForm}>Add Question/Answer</button>
-            {forms.map((form, index) => (
-                <div key={index}>
-                    <form onSubmit={handleSubmit}>
-                        <div>
-                            <label>Question:</label>
-                            <select
-                                name="question"
-                                value={form.question}
-                                onChange={(e) => handleInputChange(index, e)}
-                            >
-                                {/* no value here because it's just the display */}
-                                <option value="">Select a question</option>
-                                {/* map over the list of questions we got earlier */}
-                                {questionList.map(q => (
-                                    <option key={q.id} value={q.question}>{q.question}</option>
-                                ))}
-                            </select>
+        <Container>
+            <Row className="justify-content-center m-3">
+              <Col xs={8} md={10} className="text-center justify-content-center">
+                <div>
+                    <h3>Build Out Your Profile By Answering a Few Questions!</h3>
+                    <h5>Add up to 5 answers!</h5>
+                    <button onClick={addForm}>Add Question/Answer</button>
+                    {/* I'm going to add a container and row and column just to try and fix some formatting stuff*/}
+                    {forms.map((form, index) => (
+                        <div key={index}>
+                            <form onSubmit={handleSubmit}>
+                                <div xs={6}>
+                                    <label>Question:</label>
+                                    <select
+                                        name="question"
+                                        style={{width: "100%"}}
+                                        value={form.question}
+                                        onChange={(e) => handleInputChange(index, e)}
+                                    >
+                                        {/* no value here because it's just the display */}
+                                        <option value="">Select a question</option>
+                                        {/* map over the list of questions we got earlier */}
+                                        {questionList.map(q => (
+                                            <option key={q.id} value={q.question}>{q.question}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {/* Okay I'm going to try and set something here so that if there is a question with image, it will not show this. But I'm going to have to do 
+                                it by kind of reversing the logic. I'll say if the question does not include the picture render this */}
+                                {!form.question.includes('picture') && (
+                                <div>
+                                    <label>Answer:</label>
+                                    <input
+                                        type="text"
+                                        name="answer"
+                                        value={form.answer}
+                                        onChange={(e) => handleInputChange(index, e)}
+                                    />
+                                </div>
+                                )}
+                                {/* this is something that sets the display to show a file input if the question has an image, this was hard!! */}
+                                {form.question.includes('picture') && (
+                                    <div>
+                                        <label>Image:</label>
+                                        <input
+                                            type="file"
+                                            name="image"
+                                            onChange={(e) => handleInputChange(index, e)}
+                                        />
+                                    </div>
+                                )}
+                                {/* this button will remove the question if they change their mind */}
+                                <button type="button" onClick={() => removeForm(index)}>Remove</button>
+                            </form>
                         </div>
-                        <div>
-                            <label>Answer:</label>
-                            <input
-                                type="text"
-                                name="answer"
-                                value={form.answer}
-                                onChange={(e) => handleInputChange(index, e)}
-                            />
-                        </div>
-                        {/* this is something that sets the display to show a file input if the question has an image, this was hard!! */}
-                        {form.question.includes('picture') && (
-                            <div>
-                                <label>Image:</label>
-                                <input
-                                    type="file"
-                                    name="image"
-                                    onChange={(e) => handleInputChange(index, e)}
-                                />
-                            </div>
-                        )}
-                        {/* this button will remove the question if they change their mind */}
-                        <button type="button" onClick={() => removeForm(index)}>Remove</button>
-                    </form>
+                    ))}
+                    <button type="submit" onClick={handleSubmit}>Submit Your Answers</button>
                 </div>
-            ))}
-            <button type="submit" onClick={handleSubmit}>Submit Your Answers</button>
-        </div>
+            </Col>
+        </Row>
+    </Container>
     )
 }
 

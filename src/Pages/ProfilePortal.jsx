@@ -6,9 +6,10 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { getUser, getMatchProfile } from "../api"
+import { getUser, getMatchProfile, baseUrl } from "../api"
 import { Context } from "../Context"
 import Image from 'react-bootstrap/Image';
+
 
 
 // <img src={`http://127.0.0.1:8000${profilePhoto}`} width="250"
@@ -41,22 +42,30 @@ function ProfilePortal(){
 
 
     return(
-        <div>
-            
-            <br/>
-            <h1>Hello {name}!</h1>
-            <br/>
-            
-            <Image src={`http://127.0.0.1:8000${profilePhoto}`} width="271" height="280" roundedCircle/>
-
-            <Link to='/UserMatchProfile'>
-                <h3> View or Change Your Match Display </h3>
-            </Link>
-            <br/>
-            <Link to='/UserInterestInventory'>
-                <h3> View or Change Your Interest Inventory </h3>
-            </Link>
-        </div>
+        <ThemeProvider
+          breakpoints={['xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs']}
+          minBreakpoint="xs"
+        >
+          <Container className="mt-5">
+            <Row className="justify-content-center m-3">
+              <Col xs={12} md={8} className="d-flex flex-column justify-content-between text-center MainBody">
+                <div className="overflow-scroll" style={{height: "75vh"}}>
+                    <br/>
+                    <h1>Hello {name}!</h1>
+                    <br/>
+                    <Image src={`${baseUrl}${profilePhoto}`} width="271" height="280" roundedCircle/>
+                    <Link to='/UserMatchProfile'>
+                        <h3> View or Change Your Match Display </h3>
+                    </Link>
+                    <br/>
+                    <Link to='/UserInterestInventory'>
+                        <h3> View or Change Your Interest Inventory </h3>
+                    </Link>
+                </div>
+              </Col>
+            </Row>
+          </Container>
+        </ThemeProvider>
     )
 }
 
