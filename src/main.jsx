@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import {
   createBrowserRouter,
@@ -146,7 +146,9 @@ const ContextProvider = ({ children }) => {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
+  <StrictMode>
   <ContextProvider>
    <RouterProvider router={router} />
   </ContextProvider>
+  </StrictMode>
 )
