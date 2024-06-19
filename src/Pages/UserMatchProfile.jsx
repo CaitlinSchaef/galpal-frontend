@@ -61,12 +61,27 @@ const Body = () => {
 
     return(
         <div>
+            {/* displaying name, bio, and location from the user match profile */}
             <br/>
             <h1>{name}!</h1>
             <h4>{bio}</h4>
             <h5>{city}, {userState}</h5>
             <br/>
             <Image src={`http://127.0.0.1:8000${profilePhoto}`} width="271" height="280" roundedCircle/>
+            <br />
+            <div>
+                {/* check and see if the answer has an image, if it has an image then it will render the image and not 'answer' */}
+                {answerList && answerList.map((answerItem, index) => (
+                    <div key={index}>
+                        <h5>Question: {answerItem.question.question}</h5>
+                        {answerItem.image_answer ? (
+                            <Image src={`http://127.0.0.1:8000${answerItem.image_answer}`} alt="Answer Image" />
+                        ) : (
+                            <p>Answer: {answerItem.answer}</p>
+                        )}
+                    </div>
+                ))}
+            </div>
 
         </div>
     )
