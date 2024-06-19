@@ -56,6 +56,22 @@ export const createUser = ({ username, password, firstName, lastName,  email}) =
     })
   }
 
+// Delete User Profile:
+export const deleteUser = ({ context }) => {
+  axios({
+    method: 'delete',
+    url: `${baseUrl}/delete-user/`, 
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  }).then(response => {
+    console.log('DELETE USER: ', response)
+  })
+  .catch(error => {
+    console.log('DELETE USER ERROR: ', error)
+    context.setAccessToken(undefined)
+  })
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Match Questions
 

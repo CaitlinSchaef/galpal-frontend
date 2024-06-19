@@ -2,31 +2,37 @@
 
 import { useContext } from 'react'
 import { Context } from '../Context'
-
-
+import { deleteUser } from '../api'
+import { useNavigate } from 'react-router-dom'
 
 function UserSettings() {
     const { context } = useContext(Context)
+    const navigate = useNavigate()
     
     const logOut = () => {
-        // this will both clear the local storage and also take away the access token!
-        const logOut = () => {
           localStorage.clear("token")
           context.setAccessToken('')
           localStorage.clear("user")
           context.setUser('')
           console.log('LOGGED OUT: SUCCESS')
-        }
-    
+          navigate('/')
     }
+
+    const handleDelete = () => {
+        deleteUser({ context })
+        navigate('/')
+      }
+
+
 
     return (
         <>
         Update name/email/etc 
         <button onClick={() => logOut()}>Log Out</button>
-        Delete Account 
+        <button className="deleteButton" onClick={() => handleDelete()}>Delete Account</button>
         </>
     )
 }
 
 export default UserSettings
+

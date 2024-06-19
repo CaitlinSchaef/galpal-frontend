@@ -162,7 +162,7 @@
 //                     </div>
 //                 ))
 //             ) : (
-//                 <p>No profiles available.</p>
+//                 <p>No profiles to match.</p>
 //             )}
 //         </div>
 //     );
