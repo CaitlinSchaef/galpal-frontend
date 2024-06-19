@@ -39,7 +39,8 @@ function ProfilePortal(){
     console.log('USER Profile: ', userProfile)
     console.log('NAME: ', name)
 
-
+    console.log('ALSO BLAMMO: BASEURL: ', baseUrl)
+    console.log('BLAMMO: PROFILE PHOTO: ', profilePhoto)
 
     return(
         <ThemeProvider

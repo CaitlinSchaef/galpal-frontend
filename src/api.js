@@ -15,7 +15,7 @@ console.log('BASE URL: ', baseUrl)
 
 // Get access token (this happens on user log in):
 export const getToken = ({ username, password }) => {
-    return axios.post(`${baseUrl}token/`, {
+    return axios.post(`${baseUrl}/token/`, {
         username: username,
         password: password
     })
@@ -25,7 +25,7 @@ export const getToken = ({ username, password }) => {
 export const getUser = ({ context }) => {
     axios({
       method: 'get',
-      url: `${baseUrl}profile/`, 
+      url: `${baseUrl}/profile/`, 
       headers: {
         Authorization: `Bearer ${context.accessToken}`
       }
@@ -42,7 +42,7 @@ export const getUser = ({ context }) => {
 export const createUser = ({ username, password, firstName, lastName,  email}) => {
     return axios({
       method: 'post',
-      url: `${baseUrl}create-user/`, 
+      url: `${baseUrl}/create-user/`, 
       headers: {
         'Content-Type': 'multipart/form-data'
       },
@@ -63,7 +63,7 @@ export const createUser = ({ username, password, firstName, lastName,  email}) =
 export const getQuestions = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}get-questions/`,
+    url: `${baseUrl}/get-questions/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -85,7 +85,7 @@ export const getQuestions = ({ context }) => {
 export const getAnswers = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}get-answers/`,
+    url: `${baseUrl}/get-answers/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -96,7 +96,7 @@ export const getAnswers = ({ context }) => {
 export const createAnswer = ({ context, formData }) => {
   return axios({
       method: 'post',
-      url: `${baseUrl}create-answer/`,
+      url: `${baseUrl}/create-answer/`,
       headers: {
         Authorization: `Bearer ${context.accessToken}`,
         'Content-Type': 'multipart/form-data'
@@ -119,7 +119,7 @@ export const createAnswer = ({ context, formData }) => {
 export const createMatchProfile = ({ context, displayName, bio, city, stateLocation, profilePhoto }) => {
   return axios({
     method: 'post',
-    url: `${baseUrl}create-match-profile/`, 
+    url: `${baseUrl}/create-match-profile/`, 
     headers: {
       Authorization: `Bearer ${context.accessToken}`,
       'Content-Type': 'multipart/form-data'
@@ -138,7 +138,7 @@ export const createMatchProfile = ({ context, displayName, bio, city, stateLocat
 export const getMatchProfile = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}get-match-profile/`,
+    url: `${baseUrl}/get-match-profile/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -159,7 +159,7 @@ export const getMatchProfile = ({ context }) => {
 export const getInterests = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}get-interests/`,
+    url: `${baseUrl}/get-interests/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -180,7 +180,7 @@ export const getInterests = ({ context }) => {
 export const createInterestInventory = ({ context, interest }) => {
   axios({
     method: 'post',
-    url: `${baseUrl}create-interest-inventory/`, 
+    url: `${baseUrl}/create-interest-inventory/`, 
     headers: {
       Authorization: `Bearer ${context.accessToken}`,
     },
@@ -200,7 +200,7 @@ export const createInterestInventory = ({ context, interest }) => {
 export const getInterestInventory = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}get-interest-inventory/`,
+    url: `${baseUrl}/get-interest-inventory/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -220,7 +220,7 @@ export const getInterestInventory = ({ context }) => {
 export const getMatchRequests = ({ context }) => {
   return axios({
     method: 'get',
-    url: `${baseUrl}get-match-requests/`,
+    url: `${baseUrl}/get-match-requests/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
@@ -230,7 +230,7 @@ export const getMatchRequests = ({ context }) => {
 export const createMatchRequest = ({ context, data }) => {
   return axios({
     method: 'post',
-    url: `${baseUrl}create-match-request/`,
+    url: `${baseUrl}/create-match-request/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`,
       'Content-Type': 'multipart/form-data'
@@ -243,7 +243,7 @@ export const createMatchRequest = ({ context, data }) => {
 export const updateMatchRequest = ({ context, id, data }) => {
   return axios({
     method: 'patch',
-    url: `${baseUrl}update-match-request/${id}/`,
+    url: `${baseUrl}/update-match-request/${id}/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`,
       'Content-Type': 'application/json'
@@ -257,7 +257,7 @@ export const updateMatchRequest = ({ context, id, data }) => {
 export const createMessageChannel = ({ context, data }) => {
   return axios({
     method: 'post',
-    url: `${baseUrl}create-message-channel/`,
+    url: `${baseUrl}/create-message-channel/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`,
       'Content-Type': 'multipart/form-data'
@@ -269,7 +269,7 @@ export const createMessageChannel = ({ context, data }) => {
 export const addToFriendsList = ({ context, data }) => {
   return axios({
     method: 'post',
-    url: `${baseUrl}add-to-friends-list/`,
+    url: `${baseUrl}/add-to-friends-list/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`,
       'Content-Type': 'multipart/form-data'
