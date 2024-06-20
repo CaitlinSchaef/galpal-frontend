@@ -34,7 +34,7 @@ const AddInterestDisplay = ({ setDisplay }) => {
     const [selectedInterests, setSelectedInterests] = useState([])
     const [interestList, setInterestList] = useState([])
     //setting the max number of selections they can select 
-    const maxSelections = 10
+    const maxSelections = 15
 
     useEffect(() => {
         const fetchInterests = async () => {

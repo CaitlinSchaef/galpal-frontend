@@ -8,7 +8,7 @@ function UserInterestInventory() {
     const [interestInventory, setInterestInventory] = useState([])
     const [selectedInterests, setSelectedInterests] = useState([])
     const [interestList, setInterestList] = useState([])
-    const maxSelections = 10
+    const maxSelections = 15
 
     useEffect(() => {
         const fetchInterestInventory = async () => {

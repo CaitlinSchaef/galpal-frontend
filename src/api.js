@@ -127,6 +127,24 @@ export const createAnswer = ({ context, formData }) => {
     })
 }
 
+// Get ALLL Match Profile Answers for all users, this works 
+export const getAllAnswers = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-all-answers/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  }).then(response => {
+    console.log('GET ALL ANSWERS: ', response)
+    // because you're using this data you need to return the response
+    return response
+  })
+  .catch(error => {
+    console.log('GET ALL ANSWERS ERROR: ', error)
+  })
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Match Profile Display
 
@@ -158,6 +176,24 @@ export const getMatchProfile = ({ context }) => {
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
+  })
+}
+
+// Get ALLLLL Match Profile Displays like for all users, this works! 
+export const getAllProfileDisplays = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-all-match-profiles/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  }).then(response => {
+    console.log('GET ALL PROFILES: ', response)
+    // because you're using this data you need to return the response
+    return response
+  })
+  .catch(error => {
+    console.log('GET ALL PROFILES ERROR: ', error)
   })
 }
 
@@ -205,7 +241,7 @@ export const createInterestInventory = ({ context, interest }) => {
   })
 }
 
-// Get interest inventory, this works
+// Get interest inventory of current user, this works
 export const getInterestInventory = ({ context }) => {
   return axios({
     method: 'get',
@@ -220,6 +256,17 @@ export const getInterestInventory = ({ context }) => {
   })
   .catch(error => {
     console.log('GET INTEREST INVENTORY ERROR: ', error)
+  })
+}
+
+// Get interest inventory of all users 
+export const getAllInterestInventories = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-all-interest-inventories/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
   })
 }
 
@@ -259,7 +306,7 @@ export const getMatchRequests = ({ context }) => {
 
 
 // create new match request, idk if this works
-export const createMatchRequest = ({ context, data }) => {
+export const createMatchRequest = ({ context, requested }) => {
   return axios({
     method: 'post',
     url: `${baseUrl}/create-match-request/`,
@@ -267,7 +314,9 @@ export const createMatchRequest = ({ context, data }) => {
       Authorization: `Bearer ${context.accessToken}`,
       'Content-Type': 'multipart/form-data'
     },
-    data: data
+    data: {
+      requested
+    }
   })
 }
 

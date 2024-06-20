@@ -1,180 +1,225 @@
 // this page is where people will swipe 
+import {  getAllAnswers, getAllProfileDisplays, getAllInterestInventories, getMatchRequests, getInterestInventory, baseUrl } from '../api'
+import { useState, useContext, useEffect } from "react"
+import ThemeProvider from 'react-bootstrap/ThemeProvider'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import { Context } from "../Context"
+import Image from 'react-bootstrap/Image'
 
 
-// import React, { useEffect, useState, useContext } from 'react';
-// import { getMatchProfile, getMatchRequests, createMatchRequest, updateMatchRequest, createMessageChannel, addToFriendsList } from '../api'; // Import your API functions
-// import { Context } from '../Context'; // Assuming you have a UserContext to provide user info and access token
+// <img src={`http://127.0.0.1:8000${profilePhoto}`} width="250"
+//                 height="250" alt="Profile Photo" />
 
-// function Matching() {
-//     const { context } = useContext(UserContext); // Use context for user data and access token
-//     const [profiles, setProfiles] = useState([]);
-//     const [deniedUserIds, setDeniedUserIds] = useState([]);
+const Body = () => {
+    const { context } = useContext(Context)
 
-//     useEffect(() => {
-//         async function fetchProfiles() {
-//             try {
-//                 const response = await getMatchProfile({ context });
-//                 const allProfiles = response.data;
+    const [allAnswerList, setAllAnswerList] = useState([])
+    const [listOfAllUsers, setListOfAllUsers] = useState([])
+    const [listOfAllInventories, setListOfAllInventories] = useState([])
+    const [matchRequests, setMatchRequests] = useState([])
+    const [currentUserInterests, setCurrentUserInterests] = useState([])
+    const [potentialMatches, setPotentialMatches] = useState([])
+    const [currentProfileIndex, setCurrentProfileIndex] = useState(0)
 
-//                 const matchRequestsResponse = await getMatchRequests({ context });
-//                 const matchRequests = matchRequestsResponse.data;
+    //I need to set something for the current user in state maybe? because line 83 is bad 
 
-//                 const deniedProfiles = matchRequests
-//                     .filter(match => match.requested.id === context.user.profile.id && match.status === 'Denied')
-//                     .map(match => match.requester.id);
+    // okay this used to be like 4 use effects but we're combining them so the page doesn't run a bunch 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [profilesResponse, answersResponse, inventoriesResponse, matchRequestsResponse, currentUserInterestsResponse] = await Promise.all([
+                    getAllProfileDisplays({ context }),
+                    getAllAnswers({ context }),
+                    getAllInterestInventories({ context }),
+                    getMatchRequests({ context }),
+                    getInterestInventory({ context })
+                ])
 
-//                 setDeniedUserIds(deniedProfiles);
+                setListOfAllUsers(profilesResponse.data)
+                setAllAnswerList(answersResponse.data)
+                setListOfAllInventories(inventoriesResponse.data)
+                setMatchRequests(matchRequestsResponse.data)
 
-//                 const availableProfiles = allProfiles.filter(profile => !deniedProfiles.includes(profile.id));
+                const interests = currentUserInterestsResponse.data.map(item => item.interest.interests)
+                setCurrentUserInterests(interests)
+            } catch (error) {
+                console.error('Failed to fetch data:', error)
+            }
+        }
 
-//                 // Fetch user's interests
-//                 const userInterestsResponse = await getInterestInventory({ context });
-//                 const userInterests = userInterestsResponse.data.map(item => item.interest.id);
+        fetchData()
+    }, [context])
 
-//                 // Sort profiles by shared interests
-//                 const sortedProfiles = availableProfiles.sort((a, b) => {
-//                     const aInterests = a.interest_inventory.map(item => item.interest.id);
-//                     const bInterests = b.interest_inventory.map(item => item.interest.id);
+    console.log('LIST OF ALL PROFILES:', listOfAllUsers)
+    console.log('ALL ANSWER LIST:', allAnswerList)
+    console.log('ALL INVENTORIES LIST:', listOfAllInventories)
+    console.log('ALL MATCH REQUESTS:', matchRequests)
+    console.log('CURRENT USER INTEREST INVENTORY:', currentUserInterests)
 
-//                     const aShared = aInterests.filter(interest => userInterests.includes(interest)).length;
-//                     const bShared = bInterests.filter(interest => userInterests.includes(interest)).length;
+    useEffect(() => {
+        if (listOfAllUsers.length > 0 && listOfAllInventories.length > 0 && currentUserInterests.length > 0) {
+            console.log("Starting filtering and sorting...")
 
-//                     return bShared - aShared;
-//                 });
+            let usersInterestsMap = {}
+            listOfAllInventories.forEach(item => {
+                const userId = item.user
+                if (!usersInterestsMap[userId]) {
+                    usersInterestsMap[userId] = []
+                }
+                usersInterestsMap[userId].push(item.interest)
+            })
 
-//                 setProfiles(sortedProfiles);
-//             } catch (error) {
-//                 console.log('Error fetching profiles:', error);
-//             }
-//         }
+            let profilesWithInterests = listOfAllUsers.map(profile => ({
+                ...profile,
+                interests: usersInterestsMap[profile.user] || []
+            }))
 
-//         fetchProfiles();
-//     }, [context]);
+            profilesWithInterests.forEach(profile => {
+                console.log(`User ${profile.user} (${profile.display_name}) has interests:`, profile.interests)
+            })
 
-//     const handleFriend = async (requestedProfile) => {
-//         try {
-//             const matchRequestsResponse = await getMatchRequests({ context });
-//             const matchRequests = matchRequestsResponse.data;
+            const filteredMatches = profilesWithInterests.filter(profile => profile.user !== context.user)
 
-//             const existingMatch = matchRequests.find(match =>
-//                 (match.requester.id === requestedProfile.id && match.requested.id === context.user.profile.id) ||
-//                 (match.requester.id === context.user.profile.id && match.requested.id === requestedProfile.id)
-//             );
+            filteredMatches.forEach(profile => {
+                const profileInterests = profile.interests.map(interest => interest.interests);
+                const sharedInterestsCount = currentUserInterests.filter(interest => profileInterests.includes(interest)).length
+                profile.sharedInterestsCount = sharedInterestsCount
+                console.log(`User ${profile.user} (${profile.display_name}) shared interests count:`, sharedInterestsCount)
+            })
 
-//             if (existingMatch) {
-//                 // Update existing match request
-//                 await updateMatchRequest({
-//                     context,
-//                     id: existingMatch.id,
-//                     data: {
-//                         status: 'Approved',
-//                         matched: true
-//                     }
-//                 });
+            filteredMatches.sort((a, b) => b.sharedInterestsCount - a.sharedInterestsCount)
 
-//                 // Automatically create message channel and add to friends list
-//                 await createMessageChannel({
-//                     context,
-//                     data: {
-//                         name: `${requestedProfile.display_name} and ${context.user.profile.display_name}`,
-//                         users: [requestedProfile.id, context.user.profile.id]
-//                     }
-//                 });
+            setPotentialMatches(filteredMatches.sort((a, b) => b.sharedInterestsCount - a.sharedInterestsCount))
+            setCurrentProfileIndex(0)
+        } else {
+            console.log("Data not yet available for filtering and sorting.")
+            console.log("List of all users length:", listOfAllUsers.length)
+            console.log("List of all inventories length:", listOfAllInventories.length)
+            console.log("Current user interests length:", currentUserInterests.length)
+        }
+    }, [listOfAllUsers, listOfAllInventories, currentUserInterests, context.user])
 
-//                 await addToFriendsList({
-//                     context,
-//                     data: {
-//                         user_id: context.user.profile.id,
-//                         friend_id: requestedProfile.id
-//                     }
-//                 });
+    const displayProfile = () => {
+        if (potentialMatches.length === 0) {
+            return (
+                <div>No potential matches found.</div>
+            );
+        }
 
-//             } else {
-//                 // Create new match request
-//                 await createMatchRequest({
-//                     context,
-//                     data: {
-//                         requester: context.user.profile.id,
-//                         requested: requestedProfile.id,
-//                         status: 'Pending',
-//                         matched: false
-//                     }
-//                 });
-//             }
-//             // Reload profiles after updating match request
-//             fetchProfiles();
-//         } catch (error) {
-//             console.log('Error handling friend request:', error);
-//         }
-//     };
+        const profile = potentialMatches[currentProfileIndex]
 
-//     const handlePass = async (requestedProfile) => {
-//         try {
-//             const matchRequestsResponse = await getMatchRequests({ context });
-//             const matchRequests = matchRequestsResponse.data;
+        // Filter answers for the current profile
+        const profileAnswers = allAnswerList.filter(answer => answer.user === profile.user)
 
-//             const existingMatch = matchRequests.find(match =>
-//                 (match.requester.id === requestedProfile.id && match.requested.id === context.user.profile.id) ||
-//                 (match.requester.id === context.user.profile.id && match.requested.id === requestedProfile.id)
-//             );
+        return (
+            <div>
+                <h1>{profile.display_name}!</h1>
+                <h4>{profile.bio}</h4>
+                <h5>{profile.city}, {profile.userState}</h5>
+                <br />
+                <Image src={`${baseUrl}${profile.profile_photo}`} width="271" height="280" roundedCircle alt="Profile Photo" />
+                <br />
+                <div>
+                    {profileAnswers && profileAnswers.map((answerItem, index) => (
+                        <div key={index}>
+                            <h5>Question: {answerItem.question.question}</h5>
+                            {answerItem.image_answer ? (
+                                <Image src={`${baseUrl}${answerItem.image_answer}`} width="280" height="280" alt="Answer Image" />
+                            ) : (
+                                <p>Answer: {answerItem.answer}</p>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )
+    }
 
-//             if (existingMatch) {
-//                 // Update existing match request
-//                 await updateMatchRequest({
-//                     context,
-//                     id: existingMatch.id,
-//                     data: {
-//                         status: 'Denied',
-//                         matched: false
-//                     }
-//                 });
-//             } else {
-//                 // Create new match request
-//                 await createMatchRequest({
-//                     context,
-//                     data: {
-//                         requester: context.user.profile.id,
-//                         requested: requestedProfile.id,
-//                         status: 'Denied',
-//                         matched: false
-//                     }
-//                 });
-//             }
-//             // Reload profiles after updating match request
-//             fetchProfiles();
-//         } catch (error) {
-//             console.log('Error handling pass request:', error);
-//         }
-//     };
+    const nextProfile = () => {
+        if (currentProfileIndex < potentialMatches.length - 1) {
+            setCurrentProfileIndex(currentProfileIndex + 1)
+        }
+    }
 
-//     return (
-//         <div>
-//             <h1>Matching Portal</h1>
-//             {profiles.length > 0 ? (
-//                 profiles.map(profile => (
-//                     <div key={profile.id}>
-//                         <h2>{profile.display_name}</h2>
-//                         <p>{profile.bio}</p>
-//                         <p>{profile.city}, {profile.state}</p>
-//                         {profile.profile_photo && <img src={profile.profile_photo} alt="Profile" />}
-//                         <button onClick={() => handleFriend(profile)}>Friend</button>
-//                         <button onClick={() => handlePass(profile)}>Pass</button>
-//                     </div>
-//                 ))
-//             ) : (
-//                 <p>No profiles to match.</p>
-//             )}
-//         </div>
-//     );
-// }
+    const previousProfile = () => {
+        if (currentProfileIndex > 0) {
+            setCurrentProfileIndex(currentProfileIndex - 1)
+        }
+    }
 
-// export default Matching;
-
-function Matching() { 
     return (
-        <>
-        This is the matching page </>
+        <div>
+            <div>
+                {displayProfile()}
+            </div>
+            <button onClick={previousProfile} disabled={currentProfileIndex === 0}>Previous</button>
+            <button onClick={nextProfile} disabled={currentProfileIndex === potentialMatches.length - 1}>Next</button>
+        </div>
+    )
+}
+
+
+
+function Matching(){
+    return(
+        <ThemeProvider
+          breakpoints={['xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs']}
+          minBreakpoint="xs"
+        >
+          <Container className="mt-5">
+            <Row className="justify-content-center m-3">
+                <Col xs={12} md={8} className="d-flex flex-column justify-content-between text-center MainBody">
+                    <div className="overflow-scroll mb-3" style={{height: "75vh"}}>
+                        <Body />
+                    </div>
+                </Col>
+            </Row>
+          </Container>
+        </ThemeProvider>
     )
 }
 
 export default Matching
+
+
+
+//     // Function to handle passing on a potential match
+//     const handleFriend = async () => {
+//         const currentProfile = potentialMatch[currentProfileIndex]
+//         try {
+//             const existingRequest = matchRequests.find(request => request.requester === currentProfile.user)
+
+//             if (existingRequest) {
+//                 // Update existing request to 'Approved'
+//                 await updateMatchRequest({ context, data: { id: existingRequest.id, status: 'Approved', matched: true } })
+//                 // Create message channel and add to friends list (assuming backend handles this)
+//                 await createMessageChannel({ context, data: { profileId: currentProfile.user } })
+//                 await addToFriendsList({ context, data: { profileId: currentProfile.user } })
+//             } else {
+//                 // Create new match request with status 'Pending'
+//                 await createMatchRequest({ context, data: { requester: context.user, requested: currentProfile.user } })
+//             }
+
+//             // Move to the next potential match
+//             setCurrentProfileIndex(prevIndex => prevIndex + 1)
+//         } catch (error) {
+//             console.error('Error handling pass:', error)
+//         }
+//     }
+
+//     // Function to handle adding a potential match as a friend :)
+//     const handlePass = async () => {
+//         const currentProfile = potentialMatch[currentProfileIndex]
+//         try {
+//             // Create new match request with status 'Denied'
+//             await createMatchRequest({ context, data: { requester: context.user, requested: currentProfile.user, status: 'Denied' } })
+//             // Move to the next potential match
+//             setCurrentProfileIndex(prevIndex => prevIndex + 1)
+//         } catch (error) {
+//             console.error('Error handling friend:', error)
+//         }
+//     }
+
+
