@@ -24,12 +24,15 @@ function UserSettings() {
       }
 
 
-
     return (
         <>
         Update name/email/etc 
         <button onClick={() => logOut()}>Log Out</button>
-        <button className="deleteButton" onClick={() => handleDelete()}>Delete Account</button>
+
+        <br/>
+        <br/>
+        <br/>
+        <button className="deleteButton" onClick={() => handleDelete()}>Delete Account!</button>
         </>
     )
 }

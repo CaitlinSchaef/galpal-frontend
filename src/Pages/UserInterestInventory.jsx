@@ -1,10 +1,10 @@
 // a page for users to view and update their interest inventory
-import { useState, useContext, useEffect } from "react";
-import { getInterestInventory, updateInterestInventory, getInterests } from "../api";
-import { Context } from "../Context";
+import { useState, useContext, useEffect } from "react"
+import { getInterestInventory, updateInterestInventory, getInterests } from "../api"
+import { Context } from "../Context"
 
 function UserInterestInventory() {
-    const { context } = useContext(Context);
+    const { context } = useContext(Context)
     const [interestInventory, setInterestInventory] = useState([])
     const [selectedInterests, setSelectedInterests] = useState([])
     const [interestList, setInterestList] = useState([])
@@ -26,7 +26,7 @@ function UserInterestInventory() {
     }, [context])
 
 
-    // we're always going to call getInterests so that users can update their interests with the newest list of availble interests 
+    // we're always going to call getInterests so that users can update their interests with the newest list of available interests 
     useEffect(() => {
         const fetchInterests = async () => {
             try {
@@ -66,10 +66,9 @@ function UserInterestInventory() {
         }
     }
     // need to put in a no interest found thing for the users who didn't go through the demo
-    
     return (
         <div>
-            <h1>Your Current Interests</h1>
+            <h1>Your Current Interests: </h1>
             {interestInventory.length > 0 ? (
                 <ul>
                     {interestInventory.map((item, index) => (
@@ -79,7 +78,7 @@ function UserInterestInventory() {
             ) : (
                 <p>No interests found</p>
             )}
-            <h2>Update Your Interests</h2>
+            <h2>Update Your Interests: </h2>
             {interestList.length > 0 ? (
                 <form>
                     {interestList.map((interest) => (
@@ -96,7 +95,7 @@ function UserInterestInventory() {
                         </div>
                     ))}
                     <button type="button" onClick={handleSubmit} disabled={selectedInterests.length === 0}>
-                        Update Interests
+                        Update Interests!
                     </button>
                 </form>
             ) : (

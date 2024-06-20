@@ -13,7 +13,7 @@ console.log('BASE URL: ', baseUrl)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //User stuff
 
-// Get access token (this happens on user log in):
+// Get access token (this happens on user log in), this works (try and catch handled on login page so navigate worked)
 export const getToken = ({ username, password }) => {
     return axios.post(`${baseUrl}/token/`, {
         username: username,
@@ -21,7 +21,7 @@ export const getToken = ({ username, password }) => {
     })
 }
 
-// Fetch User Profile:
+// Fetch User Profile, this works (but not really using it anywhere)
 export const getUser = ({ context }) => {
     axios({
       method: 'get',
@@ -38,7 +38,7 @@ export const getUser = ({ context }) => {
     })
   }
 
-//Create New User
+//Create New User, this works, try and catch handled on create user page so navigate worked)
 export const createUser = ({ username, password, firstName, lastName,  email}) => {
     return axios({
       method: 'post',
@@ -56,7 +56,7 @@ export const createUser = ({ username, password, firstName, lastName,  email}) =
     })
   }
 
-// Delete User Profile:
+// Delete User Profile, honestly don't know if this works, need to try it with a dummy account
 export const deleteUser = ({ context }) => {
   axios({
     method: 'delete',
@@ -75,7 +75,7 @@ export const deleteUser = ({ context }) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Match Questions
 
-// Get Match Profile Questions
+// Get Match Profile Questions, this works
 export const getQuestions = ({ context }) => {
   return axios({
     method: 'get',
@@ -97,7 +97,7 @@ export const getQuestions = ({ context }) => {
 // Match Answers
 
 // Get Match Profile Answers
-// this is filtering by the user on the back end maybe it works
+// this is filtering by the user on the back end, it works
 export const getAnswers = ({ context }) => {
   return axios({
     method: 'get',
@@ -108,7 +108,7 @@ export const getAnswers = ({ context }) => {
   })
 }
 
-// Create Match Profile Answers
+// Create Match Profile Answers, this works
 export const createAnswer = ({ context, formData }) => {
   return axios({
       method: 'post',
@@ -131,7 +131,7 @@ export const createAnswer = ({ context, formData }) => {
 // Match Profile Display
 
 // Create Match Profile Display
-//took out the .then and .catch here because I'm doing it in the function
+//took out the .then and .catch here because I'm doing it in the function, this works
 export const createMatchProfile = ({ context, displayName, bio, city, stateLocation, profilePhoto }) => {
   return axios({
     method: 'post',
@@ -150,7 +150,7 @@ export const createMatchProfile = ({ context, displayName, bio, city, stateLocat
   })
 }
 
-//Get Match Profile Display
+//Get Match Profile Display, this works
 export const getMatchProfile = ({ context }) => {
   return axios({
     method: 'get',
@@ -161,17 +161,10 @@ export const getMatchProfile = ({ context }) => {
   })
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Match Requests
-// you need to filter results coming in based on denied? I need to like get user profiles and compare against requests and then don't show anyone that has denied, so prob will need to do stuff with fetch profile 
-// no i need to get match request and then filter out where the user = requested and status = denied
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Interests
 
-//get all of the interests
+//get all of the interests, this works
 export const getInterests = ({ context }) => {
   return axios({
     method: 'get',
@@ -192,7 +185,7 @@ export const getInterests = ({ context }) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Interests Inventories 
 
-// Create new interest inventory
+// Create new interest inventory, this works
 export const createInterestInventory = ({ context, interest }) => {
   axios({
     method: 'post',
@@ -212,7 +205,7 @@ export const createInterestInventory = ({ context, interest }) => {
   })
 }
 
-// Get interest inventory
+// Get interest inventory, this works
 export const getInterestInventory = ({ context }) => {
   return axios({
     method: 'get',
@@ -230,8 +223,8 @@ export const getInterestInventory = ({ context }) => {
   })
 }
 
-//update interest inventory 
-// Update interest inventory
+//update interest inventory , this works, handling try catch on function page
+// this is a put, so basically deletes the old user stuff and makes a new one
 export const updateInterestInventory = ({ context, interests }) => {
   return axios({
       method: 'put',
@@ -248,8 +241,12 @@ export const updateInterestInventory = ({ context, interests }) => {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Requested Matches
+// Match Requests
+// you need to filter results coming in based on denied? I need to like get user profiles and compare against requests and then don't show anyone that has denied, so prob will need to do stuff with fetch profile 
+// no i need to get match request and then filter out where the user = requested and status = denied
 
+
+// get match requests, idk if this works
 export const getMatchRequests = ({ context }) => {
   return axios({
     method: 'get',
@@ -257,9 +254,11 @@ export const getMatchRequests = ({ context }) => {
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     }
-  });
-};
+  })
+}
 
+
+// create new match request, idk if this works
 export const createMatchRequest = ({ context, data }) => {
   return axios({
     method: 'post',
@@ -269,14 +268,15 @@ export const createMatchRequest = ({ context, data }) => {
       'Content-Type': 'multipart/form-data'
     },
     data: data
-  });
-};
+  })
+}
 
-// update match request
-export const updateMatchRequest = ({ context, id, data }) => {
+// update match request, idk if this works
+// using a patch because it will just update part of the thing, but maybe need to change it to a put?
+export const updateMatchRequest = ({ context, data }) => {
   return axios({
     method: 'patch',
-    url: `${baseUrl}/update-match-request/${id}/`,
+    url: `${baseUrl}/update-match-request/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`,
       'Content-Type': 'application/json'
