@@ -230,6 +230,23 @@ export const getInterestInventory = ({ context }) => {
   })
 }
 
+//update interest inventory 
+// Update interest inventory
+export const updateInterestInventory = ({ context, interests }) => {
+  return axios({
+      method: 'put',
+      url: `${baseUrl}/update-interest-inventory/`,
+      headers: {
+          Authorization: `Bearer ${context.accessToken}`,
+          'Content-Type': 'application/json'
+      },
+      data: {
+          interests: interests
+      }
+  })
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Requested Matches
 
