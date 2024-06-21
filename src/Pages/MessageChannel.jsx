@@ -45,18 +45,31 @@ const SpecificMessageDisplay = ({ setDisplay }) => {
 
     //I need to do something to setMessageChannel, don't know if that needs to happen in initial display or here??
 
-
+    // do this to grab all of the messages for a given message channel 
     useEffect(() => {
         const fetchMessages = async () => {
             try {
                 const response = await getMessages({ context, messageChannel })
                 setMessagesInChannel(response.data)
+                    // setting up polling to get messages
+                setInterval(fetchMessages, 20000) //checks every 20 seconds
             } catch (error) {
                 console.error('Failed to fetch messages:', error)
             }
         }
         fetchMessages()
     }, [context])
+
+
+    // do this to post new message 
+    const submit = () => {
+        createMessage({ context, messageChannel, messageContent })
+        .then(response => {
+          console.log('UPLOAD POST: RESPONSE: ', response)
+        })
+        .catch(error => console.log('POST UPLOAD ERROR: ', error))
+      }
+
 
 
     return (
