@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col'
 import { Context } from "../Context"
 import Image from 'react-bootstrap/Image'
 import { getMessageChannels, getMessages, createMessage, getAllProfileDisplays } from "../api"
+import ListGroup from 'react-bootstrap/ListGroup';
 
 
 //Initial Display
@@ -14,7 +15,9 @@ const InitialDisplay = ({ setDisplay }) => {
     const { context } = useContext(Context)
     const [availableMessageChannels, setAvailableMessageChannels] = useState([])
     const [listOfAllUsers, setListOfAllUsers] = useState([])
+    const [selectedChannel, setSelectedChannel] = useState('')
 
+    // big use effect to fetch all profiles and all message channels
     useEffect(() => {
         const fetchMessageChannels = async () => {
             try {
@@ -24,19 +27,57 @@ const InitialDisplay = ({ setDisplay }) => {
                 console.error('Failed to fetch message channels:', error)
             }
         }
+        
+        const fetchAllProfileDisplays = async () => {
+            try {
+                const response = await getAllProfileDisplays({ context })
+                setListOfAllUsers(response.data);
+            } catch (error) {
+                console.error('Failed to fetch profile displays:', error)
+            }
+        }
+
         fetchMessageChannels()
+        fetchAllProfileDisplays()
     }, [context])
+
+    console.log('ALL PROFILES: ', listOfAllUsers)
+
+    const getUsernameById = (id) => {
+        const user = listOfAllUsers.find(user => user.user === id)
+        return user ? user.display_name : "Unknown User"
+    }
+    
+    // this is going to show all of the message channels that the current user is a part of, but only the other persons name. this works!
+    const renderMessageChannels = () => {
+        return availableMessageChannels.map(channel => {
+            const otherUserId = channel.user1[0] === context.userId ? channel.user2[0] : channel.user1[0] && channel.user2[0] === context.userId ? channel.user1[0] : channel.user2[0]
+            const otherUsername = getUsernameById(otherUserId)
+
+            // action onClick={alertClicked} (add this after Item in <ListGroup.Item>)
+            return (
+                <div key={channel.name}>
+                    <ListGroup>
+                        <ListGroup.Item> {otherUsername} </ListGroup.Item>
+                    </ListGroup>
+                  
+                </div>
+            )
+        })
+    }
 
     console.log('MESSAGE CHANNELS: ', availableMessageChannels)
 
     return (
         <>
-             <h1>Message Channels:</h1>
+            <h1>Message Channels:</h1>
+            {renderMessageChannels()}
         </>
     )
 }
 // Specific Message Channel Display
 // This is what will show whenever someone clicks into a specific message channel 
+//I think I will pass 'selectedChannel' to this from the initial display page 
 const SpecificMessageDisplay = ({ setDisplay }) => {
     const { context } = useContext(Context)
     const [messageContent, setMessageContent] = useState('')
