@@ -52,6 +52,10 @@ body {
   border-radius: 4%;
  }
 
+ .deleteButton {
+  background-color: red;
+ }
+
 /* 
 Palette:
 #A9ACD9 - GREY PURPLE

@@ -329,11 +329,13 @@ export const updateMatchRequest = ({ context, data, id }) => {
       'Content-Type': 'application/json'
     },
     data: data,
-  });
-};
+  })
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Message Channels
+
+//create message channel
 export const createMessageChannel = ({ context, data }) => {
   return axios({
     method: 'post',
@@ -343,9 +345,59 @@ export const createMessageChannel = ({ context, data }) => {
       'Content-Type': 'multipart/form-data'
     },
     data: data
-  });
-};
+  })
+}
 
+// get message channels
+export const getMessageChannels = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-message-channel/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  })
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Messages
+
+//create a new message
+export const createMessage = ({ context, messageChannel, messageContent }) => {
+  return axios({
+    method: 'post',
+    url: `${baseUrl}/create-match-profile/`, 
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`,
+      'Content-Type': 'multipart/form-data'
+    },
+    data: {
+      message_channel: messageChannel,
+      message_content: messageContent,
+
+    }
+  })
+}
+
+// get messages for a specific message channel
+export const getMessages = ({ context, messageChannel }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-messages/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    },
+    data: {
+      message_channel: messageChannel
+    }
+  })
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Friends List 
+
+// create new friend list, might not need this as I'm doing it in back end
 export const addToFriendsList = ({ context, data }) => {
   return axios({
     method: 'post',
@@ -355,9 +407,17 @@ export const addToFriendsList = ({ context, data }) => {
       'Content-Type': 'multipart/form-data'
     },
     data: data
-  });
-};
+  })
+}
 
+// get friends list
+export const getFriendsList = ({ context }) => {
+  return axios({
+    method: 'get',
+    url: `${baseUrl}/get-friends-list/`,
+    headers: {
+      Authorization: `Bearer ${context.accessToken}`
+    }
+  })
+}
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Messages

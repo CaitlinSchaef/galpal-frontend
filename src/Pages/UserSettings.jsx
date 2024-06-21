@@ -26,7 +26,7 @@ function UserSettings() {
 
     return (
         <>
-        Update name/email/etc 
+        Update email? 
         <button onClick={() => logOut()}>Log Out</button>
 
         <br/>
