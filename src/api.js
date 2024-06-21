@@ -366,7 +366,7 @@ export const getMessageChannels = ({ context }) => {
 export const createMessage = ({ context, messageChannel, messageContent }) => {
   return axios({
     method: 'post',
-    url: `${baseUrl}/create-match-profile/`, 
+    url: `${baseUrl}/create-message/`, 
     headers: {
       Authorization: `Bearer ${context.accessToken}`,
       'Content-Type': 'multipart/form-data'
@@ -378,6 +378,18 @@ export const createMessage = ({ context, messageChannel, messageContent }) => {
     }
   })
 }
+
+// export const createMessage = async ({ context, messageChannel, messageContent }) => {
+//   const response = await axios.post('/create-message/', {
+//       message_channel: messageChannel,
+//       message_content: messageContent,
+//   }, {
+//       headers: {
+//           Authorization: `Bearer ${context.token}`,
+//       },
+//   });
+//   return response;
+// };
 
 // get messages for a specific message channel
 export const getMessages = ({ context, messageChannel }) => {
@@ -393,6 +405,17 @@ export const getMessages = ({ context, messageChannel }) => {
   })
 }
 
+// export const getMessages = async ({ context, messageChannel }) => {
+//   const response = await axios.get('/get-messages/', {
+//       params: {
+//           message_channel: messageChannel,
+//       },
+//       headers: {
+//           Authorization: `Bearer ${context.token}`,
+//       },
+//   });
+//   return response;
+// };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Friends List 
