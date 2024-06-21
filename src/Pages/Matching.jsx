@@ -1,5 +1,5 @@
 // this page is where people will swipe 
-import {  getAllAnswers, getAllProfileDisplays, getAllInterestInventories, getMatchRequests, getInterestInventory, baseUrl } from '../api'
+import {  getAllAnswers, getAllProfileDisplays, getAllInterestInventories, getMatchRequests, getInterestInventory, baseUrl, createMatchRequest, updateMatchRequest, getMatchProfile } from '../api'
 import { useState, useContext, useEffect } from "react"
 import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
@@ -8,9 +8,6 @@ import Col from 'react-bootstrap/Col'
 import { Context } from "../Context"
 import Image from 'react-bootstrap/Image'
 
-
-// <img src={`http://127.0.0.1:8000${profilePhoto}`} width="250"
-//                 height="250" alt="Profile Photo" />
 
 const Body = () => {
     const { context } = useContext(Context)
@@ -22,10 +19,22 @@ const Body = () => {
     const [currentUserInterests, setCurrentUserInterests] = useState([])
     const [potentialMatches, setPotentialMatches] = useState([])
     const [currentProfileIndex, setCurrentProfileIndex] = useState(0)
+    const [currentUserName, setCurrentUserName] = useState()
 
-    //I need to set something for the current user in state maybe? because line 83 is bad 
+    useEffect(() => {
+        const grabProfile = async () => {
+            try {
+                const response = await getMatchProfile({ context })
+                setCurrentUserName(response.data.display_name)
+            } catch (error) {
+                console.error('Failed to fetch user:', error)
+            }
+        }
+        grabProfile()
+    }, [context])
 
-    // okay this used to be like 4 use effects but we're combining them so the page doesn't run a bunch 
+
+    // okay this used to be like 4 use effects but we're combining them so the page doesn't run a bunch, all the info we need
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -40,7 +49,7 @@ const Body = () => {
                 setListOfAllUsers(profilesResponse.data)
                 setAllAnswerList(answersResponse.data)
                 setListOfAllInventories(inventoriesResponse.data)
-                setMatchRequests(matchRequestsResponse.data)
+                setMatchRequests(matchRequestsResponse.data || [])
 
                 const interests = currentUserInterestsResponse.data.map(item => item.interest.interests)
                 setCurrentUserInterests(interests)
@@ -76,11 +85,23 @@ const Body = () => {
                 interests: usersInterestsMap[profile.user] || []
             }))
 
+
             profilesWithInterests.forEach(profile => {
                 console.log(`User ${profile.user} (${profile.display_name}) has interests:`, profile.interests)
             })
+            // get usernames of users who have been denied
 
-            const filteredMatches = profilesWithInterests.filter(profile => profile.user !== context.user)
+            /// Get denied users based on matchRequests
+            const deniedUsers = Array.isArray(matchRequests)
+            ? matchRequests.filter(request => request.status === 'Denied').map(request => request.requested_display_name)
+            : [];
+
+            console.log('DENIED USERS: ', deniedUsers);
+
+            // Filter potential matches
+            const filteredMatches = profilesWithInterests.filter(profile =>
+                profile.display_name !== currentUserName && !deniedUsers.includes(profile.display_name)
+            );
 
             filteredMatches.forEach(profile => {
                 const profileInterests = profile.interests.map(interest => interest.interests);
@@ -101,10 +122,49 @@ const Body = () => {
         }
     }, [listOfAllUsers, listOfAllInventories, currentUserInterests, context.user])
 
+        // Function to diss someone aka pass
+    const handlePass = async () => {
+        const currentProfile = potentialMatches[currentProfileIndex]
+        try {
+            console.log('CURRENT PROFILE: ', currentProfile)
+            // Create new match request with status 'Denied'
+            await createMatchRequest({ context, data: { requested: currentProfile.display_name, status: 'Denied' } })
+            console.log('LOOK HERE: ', currentProfile.user)
+            console.log('LOOKIT THIS: ', currentProfile)
+            // Move to the next potential match
+            setCurrentProfileIndex(prevIndex => prevIndex + 1)
+        } catch (error) {
+            console.error('Error handling friend:', error)
+        }
+    }
+
+    //function to handle a 'friend'
+    const handleFriend = async () => {
+    const currentProfile = potentialMatches[currentProfileIndex]
+    try {
+        const existingRequest = matchRequests.find(request => request.requester === currentProfile.user)
+
+        if (existingRequest) {
+            // Update existing request to 'Approved'
+            await updateMatchRequest({ context, data: { id: existingRequest.id, status: 'Approved', matched: true } })
+            // Create message channel and add to friends list (assuming backend handles this)
+            await createMessageChannel({ context, data: { profileId: currentProfile.user } })
+            await addToFriendsList({ context, data: { profileId: currentProfile.user } })
+        } else {
+            // Create new match request with status 'Pending'
+            await createMatchRequest({ context, data: { requested: currentProfile.user, status: 'Pending' } })
+        }
+        // Move to the next potential match
+        setCurrentProfileIndex(prevIndex => prevIndex + 1)
+    } catch (error) {
+        console.error('Error handling pass:', error)
+    }
+}
+
     const displayProfile = () => {
         if (potentialMatches.length === 0) {
             return (
-                <div>No potential matches found.</div>
+                <div>No more friends to meet!</div>
             );
         }
 
@@ -154,8 +214,8 @@ const Body = () => {
             <div>
                 {displayProfile()}
             </div>
-            <button onClick={previousProfile} disabled={currentProfileIndex === 0}>Previous</button>
-            <button onClick={nextProfile} disabled={currentProfileIndex === potentialMatches.length - 1}>Next</button>
+            <button onClick={handlePass} disabled={currentProfileIndex === 0}>PASS</button>
+            <button onClick={nextProfile} disabled={currentProfileIndex === potentialMatches.length - 1}>FRIEND</button>
         </div>
     )
 }
@@ -185,7 +245,7 @@ export default Matching
 
 
 
-//     // Function to handle passing on a potential match
+
 //     const handleFriend = async () => {
 //         const currentProfile = potentialMatch[currentProfileIndex]
 //         try {
@@ -209,17 +269,5 @@ export default Matching
 //         }
 //     }
 
-//     // Function to handle adding a potential match as a friend :)
-//     const handlePass = async () => {
-//         const currentProfile = potentialMatch[currentProfileIndex]
-//         try {
-//             // Create new match request with status 'Denied'
-//             await createMatchRequest({ context, data: { requester: context.user, requested: currentProfile.user, status: 'Denied' } })
-//             // Move to the next potential match
-//             setCurrentProfileIndex(prevIndex => prevIndex + 1)
-//         } catch (error) {
-//             console.error('Error handling friend:', error)
-//         }
-//     }
 
 

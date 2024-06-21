@@ -306,7 +306,7 @@ export const getMatchRequests = ({ context }) => {
 
 
 // create new match request, idk if this works
-export const createMatchRequest = ({ context, requested }) => {
+export const createMatchRequest = ({ context, data }) => {
   return axios({
     method: 'post',
     url: `${baseUrl}/create-match-request/`,
@@ -314,9 +314,7 @@ export const createMatchRequest = ({ context, requested }) => {
       Authorization: `Bearer ${context.accessToken}`,
       'Content-Type': 'multipart/form-data'
     },
-    data: {
-      requested
-    }
+    data: data,
   })
 }
 
