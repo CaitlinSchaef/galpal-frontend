@@ -52,7 +52,8 @@ const SpecificMessageDisplay = ({ setDisplay }) => {
                 const response = await getMessages({ context, messageChannel })
                 setMessagesInChannel(response.data)
                     // setting up polling to get messages
-                setInterval(fetchMessages, 20000) //checks every 20 seconds
+                // setInterval(fetchMessages, 20000) 
+                //checks every 20 seconds, not sure if that's how the above line works?
             } catch (error) {
                 console.error('Failed to fetch messages:', error)
             }

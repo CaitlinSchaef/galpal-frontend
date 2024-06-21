@@ -180,7 +180,7 @@ const Body = () => {
         if (potentialMatches.length === 0) {
             return (
                 <div>No more friends to meet!</div>
-            );
+            )
         }
 
         const profile = potentialMatches[currentProfileIndex]
