@@ -114,6 +114,8 @@ const SpecificMessageDisplay = ({ setDisplay, selectedChannel }) => {
             console.error('Error sending message:', error)
         }
     }
+    console.log('MESSAGES: ', messagesInChannel)
+
 
     return (
         <>

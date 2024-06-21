@@ -403,6 +403,7 @@ export const getMessages = ({ context, messageChannel }) => {
       message_channel: messageChannel
     }
   })
+  return response
 }
 
 // export const getMessages = async ({ context, messageChannel }) => {
