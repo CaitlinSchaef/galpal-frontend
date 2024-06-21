@@ -94,14 +94,30 @@ const Body = () => {
             /// Get denied users based on matchRequests
             const deniedUsers = Array.isArray(matchRequests)
             ? matchRequests.filter(request => request.status === 'Denied').map(request => request.requested_display_name)
-            : [];
+            : []
+            
+            console.log('DENIED USERS: ', deniedUsers)
 
-            console.log('DENIED USERS: ', deniedUsers);
+            const deniedRequesters = Array.isArray(matchRequests)
+               ? matchRequests.filter(request => request.status === 'Denied').map(request => request.requester_display_name)
+               : []
 
-            // Filter potential matches
+
+           console.log('DENIED REQUESTERS: ', deniedRequesters)
+
+           //I think I may need to add a filter for instances where the current user = requester on a matchRequest and the status is 'pending'?
+
+           const pendingRequested = Array.isArray(matchRequests)
+               ? matchRequests.filter(request => request.status === 'Pending').map(request => request.requested_display_name)
+               : []
+
+
+            // filter potential matches by current user, denied requested and denied requester
+            // basically I don't want to show match requests where the status is Denied and the current user is the requested or requester
             const filteredMatches = profilesWithInterests.filter(profile =>
-                profile.display_name !== currentUserName && !deniedUsers.includes(profile.display_name)
-            );
+                profile.display_name !== currentUserName && !deniedUsers.includes(profile.display_name) && !deniedRequesters.includes(profile.display_name) && !pendingRequested.includes(profile.display_name)
+
+            )
 
             filteredMatches.forEach(profile => {
                 const profileInterests = profile.interests.map(interest => interest.interests);
@@ -138,28 +154,27 @@ const Body = () => {
         }
     }
 
-    //function to handle a 'friend'
+    // function to handle a 'friend'
     const handleFriend = async () => {
-    const currentProfile = potentialMatches[currentProfileIndex]
-    try {
-        const existingRequest = matchRequests.find(request => request.requester === currentProfile.user)
+        const currentProfile = potentialMatches[currentProfileIndex]
+        try {
+            const existingRequest = matchRequests.find(request => request.requester === currentProfile.user)
+            console.log('EXISTING REQUEST:', existingRequest); // Add this line
 
-        if (existingRequest) {
-            // Update existing request to 'Approved'
-            await updateMatchRequest({ context, data: { id: existingRequest.id, status: 'Approved', matched: true } })
-            // Create message channel and add to friends list (assuming backend handles this)
-            await createMessageChannel({ context, data: { profileId: currentProfile.user } })
-            await addToFriendsList({ context, data: { profileId: currentProfile.user } })
-        } else {
-            // Create new match request with status 'Pending'
-            await createMatchRequest({ context, data: { requested: currentProfile.user, status: 'Pending' } })
+            if (existingRequest) {
+                // Update existing request to 'Approved'
+                await updateMatchRequest({ context, id: existingRequest.id, data: { status: 'Approved', matched: true } })
+            } else {
+                // Create new match request with status 'Pending'
+                await createMatchRequest({ context, data: { requested: currentProfile.display_name, status: 'Pending' } })
+            }
+            // Move to the next potential match
+            setCurrentProfileIndex(prevIndex => prevIndex + 1)
+        } catch (error) {
+            console.error('Error handling pass:', error)
         }
-        // Move to the next potential match
-        setCurrentProfileIndex(prevIndex => prevIndex + 1)
-    } catch (error) {
-        console.error('Error handling pass:', error)
     }
-}
+
 
     const displayProfile = () => {
         if (potentialMatches.length === 0) {
@@ -196,18 +211,7 @@ const Body = () => {
             </div>
         )
     }
-
-    const nextProfile = () => {
-        if (currentProfileIndex < potentialMatches.length - 1) {
-            setCurrentProfileIndex(currentProfileIndex + 1)
-        }
-    }
-
-    const previousProfile = () => {
-        if (currentProfileIndex > 0) {
-            setCurrentProfileIndex(currentProfileIndex - 1)
-        }
-    }
+    
 
     return (
         <div>
@@ -215,7 +219,7 @@ const Body = () => {
                 {displayProfile()}
             </div>
             <button onClick={handlePass} disabled={currentProfileIndex === 0}>PASS</button>
-            <button onClick={nextProfile} disabled={currentProfileIndex === potentialMatches.length - 1}>FRIEND</button>
+            <button onClick={handleFriend} disabled={currentProfileIndex === potentialMatches.length - 1}>FRIEND</button>
         </div>
     )
 }
