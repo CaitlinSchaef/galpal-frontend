@@ -131,9 +131,11 @@ const UpdateInventoryDisplay = ({ setDisplay }) => {
                         Update Interests!
                     </button>
                 </form>
+                
             ) : (
                 <div>No interests found</div>
             )}
+            <button onClick={() => setDisplay('InitialDisplay')}>Cancel</button>
         </div>
     )
 }

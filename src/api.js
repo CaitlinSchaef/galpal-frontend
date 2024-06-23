@@ -185,21 +185,15 @@ export const createMatchProfile = ({ context, displayName, bio, city, stateLocat
 
 //update match profile Display , this works, handling try catch on function page
 // this is a put, so basically deletes the old user stuff and makes a new one
-export const updateMatchProfileDisplay = ({ context, displayName, bio, city, stateLocation, profilePhoto  }) => {
+export const updateMatchProfileDisplay = ({ context, formData  }) => {
   return axios({
       method: 'put',
       url: `${baseUrl}/update-match-profile/`,
       headers: {
           Authorization: `Bearer ${context.accessToken}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'multipart/form-data'
       },
-      data: {
-        display_name: displayName,
-        bio,
-        city,
-        state: stateLocation,
-        profile_photo: profilePhoto,
-      }
+      data: formData
   })
 }
 
