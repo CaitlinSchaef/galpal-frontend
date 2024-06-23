@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { Context } from "../Context"
 import Image from 'react-bootstrap/Image'
-import { getMessageChannels, getMessages, createMessage, getAllProfileDisplays } from "../api"
+import { getMessageChannels, getMessages, createMessage, getAllProfileDisplays, getMatchProfile } from "../api"
 import ListGroup from 'react-bootstrap/ListGroup';
 
 
@@ -15,32 +15,44 @@ const InitialDisplay = ({ setDisplay, setSelectedChannel }) => {
     const { context } = useContext(Context)
     const [availableMessageChannels, setAvailableMessageChannels] = useState([])
     const [listOfAllUsers, setListOfAllUsers] = useState([])
+    const [currentUserProfile, setCurrentUserProfile] = useState({});
 
-    // big use effect to fetch all profiles and all message channels
+    // big use effect to fetch all profiles and all message channels, and the current users profile 
     useEffect(() => {
         const fetchMessageChannels = async () => {
             try {
-                const response = await getMessageChannels({ context })
-                setAvailableMessageChannels(response.data)
+                const response = await getMessageChannels({ context });
+                setAvailableMessageChannels(response.data);
             } catch (error) {
-                console.error('Failed to fetch message channels:', error)
+                console.error('Failed to fetch message channels:', error);
             }
-        }
-        
+        };
+
         const fetchAllProfileDisplays = async () => {
             try {
-                const response = await getAllProfileDisplays({ context })
+                const response = await getAllProfileDisplays({ context });
                 setListOfAllUsers(response.data);
             } catch (error) {
-                console.error('Failed to fetch profile displays:', error)
+                console.error('Failed to fetch profile displays:', error);
             }
-        }
+        };
+
+        const fetchCurrentUserProfile = async () => {
+            try {
+                const response = await getMatchProfile({ context });
+                setCurrentUserProfile(response.data);
+            } catch (error) {
+                console.error('Failed to fetch current user profile:', error);
+            }
+        };
 
         fetchMessageChannels()
         fetchAllProfileDisplays()
+        fetchCurrentUserProfile()
     }, [context])
 
     console.log('ALL PROFILES: ', listOfAllUsers)
+    console.log('CURRENT USER: ', currentUserProfile)
 
     const getUsernameById = (id) => {
         const user = listOfAllUsers.find(user => user.user === id)
@@ -56,20 +68,30 @@ const InitialDisplay = ({ setDisplay, setSelectedChannel }) => {
     // this is going to show all of the message channels that the current user is a part of, but only the other persons name. this works!
     const renderMessageChannels = () => {
         return availableMessageChannels.map(channel => {
-            const otherUserId = channel.user1[0] === context.userId ? channel.user2[0] : channel.user1[0] && channel.user2[0] === context.userId ? channel.user1[0] : channel.user2[0]
+            let otherUserId
+            if (channel.user1.includes(currentUserProfile.user)) {
+                otherUserId = channel.user2[0] 
+            } else if (channel.user2.includes(currentUserProfile.user)) {
+                otherUserId = channel.user1[0]
+            } else {
+                console.error('Current user is not part of this channel:', channel)
+                return null // Handle the case where current user is not found in channel
+            }
+
             const otherUsername = getUsernameById(otherUserId)
 
-            // something like: action onClick={alertClicked} (add this after Item in <ListGroup.Item>)
             return (
                 <div key={channel.name}>
                     <ListGroup>
-                    <ListGroup.Item action onClick={() => handleChannelClick(channel)}> {otherUsername} </ListGroup.Item>
+                        <ListGroup.Item action onClick={() => handleChannelClick(channel)}>
+                            {otherUsername}
+                        </ListGroup.Item>
                     </ListGroup>
-                  
                 </div>
-            )
-        })
-    }
+            );
+        });
+    };
+
 
     console.log('MESSAGE CHANNELS: ', availableMessageChannels)
 
@@ -87,57 +109,138 @@ const SpecificMessageDisplay = ({ setDisplay, selectedChannel }) => {
     const { context } = useContext(Context)
     const [messageContent, setMessageContent] = useState('')
     const [messagesInChannel, setMessagesInChannel] = useState([])
+    const [error, setError] = useState(null)
+    const [listOfAllUsers, setListOfAllUsers] = useState([])
+    const [currentUserProfile, setCurrentUserProfile] = useState({});
+    const characterLimit = 500
 
-    //I need to do something to setMessageChannel, don't know if that needs to happen in initial display or here??
-
+   
+    // a useEffect to grab all of the messages for this channel, but also to grab all profiles so we can use display names 
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const response = await getMessages({ context, messageChannel: selectedChannel.name })
-                setMessagesInChannel(response.data)
+                const response = await getMessages({ context, messageChannel: selectedChannel.name });
+                if (Array.isArray(response.data)) {
+                    setMessagesInChannel(response.data);
+                } else {
+                    console.error('Unexpected response format:', response);
+                    setError('Unexpected response format');
+                }
             } catch (error) {
-                console.error('Failed to fetch messages:', error)
+                console.error('Failed to fetch messages:', error);
+                setError('Failed to fetch messages');
             }
-        }
-        fetchMessages()
-    }, [context, selectedChannel])
+        };
+
+        const fetchAllProfileDisplays = async () => {
+            try {
+                const response = await getAllProfileDisplays({ context });
+                setListOfAllUsers(response.data);
+            } catch (error) {
+                console.error('Failed to fetch profile displays:', error);
+            }
+        };
+
+        const fetchCurrentUserProfile = async () => {
+            try {
+                const response = await getMatchProfile({ context });
+                setCurrentUserProfile(response.data);
+            } catch (error) {
+                console.error('Failed to fetch current user profile:', error);
+            }
+        };
+
+        fetchMessages();
+        fetchAllProfileDisplays();
+        fetchCurrentUserProfile()
+    }, [context, selectedChannel]);
+
+    const getUsernameById = (id) => {
+        const user = listOfAllUsers.find(user => user.user === id);
+        return user ? user.display_name : "Unknown User";
+    };
 
     // Function to handle message submission
     const submitMessage = async () => {
         try {
             const response = await createMessage({ context, messageChannel: selectedChannel.name, messageContent })
-            // Update messages list after successful submission
-            setMessagesInChannel([...messagesInChannel, response.data])
-            // Clear message content after sending
-            setMessageContent('')
+            if (response && response.data) {
+                setMessagesInChannel([...messagesInChannel, response.data])
+                setMessageContent('')
+            } else {
+                console.error('Unexpected response format on message creation:', response)
+                setError('Unexpected response format on message creation')
+            }
         } catch (error) {
             console.error('Error sending message:', error)
+            setError('Error sending message')
         }
     }
+    if (error) {
+        return <div>Error: {error}</div>
+    }
+
     console.log('MESSAGES: ', messagesInChannel)
 
+    const renderMessages = () => {
+        return messagesInChannel.map((message, index) => {
+            const isCurrentUser = message.message_author === currentUserProfile.user
+            const displayName = getUsernameById(message.message_author)
+
+            return (
+                <div 
+                    key={index} 
+                    style={{ 
+                        textAlign: isCurrentUser ? 'right' : 'left', 
+                        padding: '10px', 
+                        backgroundColor: isCurrentUser ? '#e0f7fa' : '#e0e0e0', 
+                        borderRadius: '10px',
+                        margin: '10px 0'
+                    }}
+                >
+                    <p>{message.message_content}</p>
+                    <small>{displayName}</small>
+                </div>
+            )
+        })
+    }
+
+    const handleInputChange = (e) => {
+        setMessageContent(e.target.value)
+    }
+
+    console.log('CURRENT USER: ', context.user)
+
+    const otherUser1 = selectedChannel.user1[0];
+    const otherUser2 = selectedChannel.user2[0];
+    const otherUser1Name = getUsernameById(otherUser1);
+    const otherUser2Name = getUsernameById(otherUser2);
+    const channelName = `${otherUser1Name} and ${otherUser2Name}`;
 
     return (
         <>
-            <h1>Specific Message Channel: {selectedChannel.name}</h1>
-            
+        <button onClick={() => setDisplay('InitialDisplay')}>Back to All Messages</button>
+        <h1>Specific Message Channel: {channelName}</h1>
+        <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+            {messagesInChannel.length > 0 ? (
+                renderMessages()
+            ) : (
+                <p>No messages yet. Send your first message!</p>
+            )}
+        </div>
+        <div>
+            <textarea 
+                value={messageContent} 
+                onChange={handleInputChange}
+                style={{ width: '100%', height: '100px' }}
+                maxLength={characterLimit}
+            />
             <div>
-                {messagesInChannel.map((message, index) => (
-                    <p key={index}>{message.content}</p>
-                ))}
+                <small>{characterLimit - messageContent.length} characters left</small>
             </div>
-            
-            <div>
-                <input 
-                    type="text" 
-                    value={messageContent} 
-                    onChange={(e) => setMessageContent(e.target.value)} 
-                />
-                <button onClick={submitMessage}>Send</button>
-            </div>
-            
-            <button onClick={() => setDisplay('InitialDisplay')}>Back</button>
-        </>
+            <button onClick={submitMessage}>Send</button>
+        </div>
+    </>
     )
 }
 

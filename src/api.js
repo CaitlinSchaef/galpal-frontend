@@ -392,6 +392,7 @@ export const createMessage = ({ context, messageChannel, messageContent }) => {
 // };
 
 // get messages for a specific message channel
+// had to set this up so that the messageChannel was a query 
 export const getMessages = ({ context, messageChannel }) => {
   return axios({
     method: 'get',
@@ -399,11 +400,10 @@ export const getMessages = ({ context, messageChannel }) => {
     headers: {
       Authorization: `Bearer ${context.accessToken}`
     },
-    data: {
+    params: {
       message_channel: messageChannel
     }
   })
-  return response
 }
 
 // export const getMessages = async ({ context, messageChannel }) => {
