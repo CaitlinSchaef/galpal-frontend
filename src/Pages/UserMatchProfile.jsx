@@ -6,15 +6,13 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { getUser, getMatchProfile, getAnswers, baseUrl } from "../api"
+import { getUser, getMatchProfile, getAnswers, baseUrl, updateMatchProfileDisplay, updateProfileAnswer } from "../api"
 import { Context } from "../Context"
 import Image from 'react-bootstrap/Image';
 
 
-// <img src={`http://127.0.0.1:8000${profilePhoto}`} width="250"
-//                 height="250" alt="Profile Photo" />
 
-const Body = () => {
+const InitialDisplay = () => {
     const { context } = useContext(Context)
     const [userProfile, setUserProfile] = useState()
     const [name, setName] = useState()
@@ -87,8 +85,13 @@ const Body = () => {
     )
 }
 
+const UpdateMatchProfileDisplay = () => {
+
+}
 
 function UserMatchProfile(){
+    const [display, setDisplay] = useState('InitialDisplay')
+
     return(
         <ThemeProvider
           breakpoints={['xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs']}
@@ -98,7 +101,8 @@ function UserMatchProfile(){
             <Row className="justify-content-center m-3">
                 <Col xs={12} md={8} className="d-flex flex-column justify-content-between text-center MainBody">
                     <div className="overflow-scroll mb-3" style={{height: "75vh"}}>
-                        <Body />
+                        {display === "InitialDisplay" && <InitialDisplay setDisplay={setDisplay} />}
+                        {display === "UpdateMatchProfileDisplay" && <UpdateMatchProfileDisplay setDisplay={setDisplay} />}
                     </div>
                 </Col>
             </Row>
