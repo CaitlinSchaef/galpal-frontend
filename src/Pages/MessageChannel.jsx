@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col'
 import { Context } from "../Context"
 import Image from 'react-bootstrap/Image'
 import { getMessageChannels, getMessages, createMessage, getAllProfileDisplays, getMatchProfile } from "../api"
-import ListGroup from 'react-bootstrap/ListGroup';
+import ListGroup from 'react-bootstrap/ListGroup'
 
 
 //Initial Display
@@ -15,36 +15,36 @@ const InitialDisplay = ({ setDisplay, setSelectedChannel }) => {
     const { context } = useContext(Context)
     const [availableMessageChannels, setAvailableMessageChannels] = useState([])
     const [listOfAllUsers, setListOfAllUsers] = useState([])
-    const [currentUserProfile, setCurrentUserProfile] = useState({});
+    const [currentUserProfile, setCurrentUserProfile] = useState({})
 
-    // big use effect to fetch all profiles and all message channels, and the current users profile 
+    // big use effect to fetch all profiles and all message channels, and the current users profile (could use this or context, just setting it in case I want to use it)
     useEffect(() => {
         const fetchMessageChannels = async () => {
             try {
-                const response = await getMessageChannels({ context });
-                setAvailableMessageChannels(response.data);
+                const response = await getMessageChannels({ context })
+                setAvailableMessageChannels(response.data)
             } catch (error) {
-                console.error('Failed to fetch message channels:', error);
+                console.error('Failed to fetch message channels:', error)
             }
         };
 
         const fetchAllProfileDisplays = async () => {
             try {
-                const response = await getAllProfileDisplays({ context });
-                setListOfAllUsers(response.data);
+                const response = await getAllProfileDisplays({ context })
+                setListOfAllUsers(response.data)
             } catch (error) {
-                console.error('Failed to fetch profile displays:', error);
+                console.error('Failed to fetch profile displays:', error)
             }
         };
 
         const fetchCurrentUserProfile = async () => {
             try {
-                const response = await getMatchProfile({ context });
-                setCurrentUserProfile(response.data);
+                const response = await getMatchProfile({ context })
+                setCurrentUserProfile(response.data)
             } catch (error) {
-                console.error('Failed to fetch current user profile:', error);
+                console.error('Failed to fetch current user profile:', error)
             }
-        };
+        }
 
         fetchMessageChannels()
         fetchAllProfileDisplays()
@@ -88,9 +88,9 @@ const InitialDisplay = ({ setDisplay, setSelectedChannel }) => {
                         </ListGroup.Item>
                     </ListGroup>
                 </div>
-            );
-        });
-    };
+            )
+        })
+    }
 
 
     console.log('MESSAGE CHANNELS: ', availableMessageChannels)
@@ -111,56 +111,72 @@ const SpecificMessageDisplay = ({ setDisplay, selectedChannel }) => {
     const [messagesInChannel, setMessagesInChannel] = useState([])
     const [error, setError] = useState(null)
     const [listOfAllUsers, setListOfAllUsers] = useState([])
-    const [currentUserProfile, setCurrentUserProfile] = useState({});
+    const [currentUserProfile, setCurrentUserProfile] = useState({})
     const characterLimit = 500
+    // State to manage polling interval
+    const [pollingIntervalId, setPollingIntervalId] = useState(null)
 
    
     // a useEffect to grab all of the messages for this channel, but also to grab all profiles so we can use display names 
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const response = await getMessages({ context, messageChannel: selectedChannel.name });
+                const response = await getMessages({ context, messageChannel: selectedChannel.name })
                 if (Array.isArray(response.data)) {
-                    setMessagesInChannel(response.data);
+                    setMessagesInChannel(response.data)
                 } else {
-                    console.error('Unexpected response format:', response);
-                    setError('Unexpected response format');
+                    console.error('Unexpected response format:', response)
+                    setError('Unexpected response format')
                 }
             } catch (error) {
-                console.error('Failed to fetch messages:', error);
-                setError('Failed to fetch messages');
+                console.error('Failed to fetch messages:', error)
+                setError('Failed to fetch messages')
             }
-        };
+        }
 
         const fetchAllProfileDisplays = async () => {
             try {
-                const response = await getAllProfileDisplays({ context });
-                setListOfAllUsers(response.data);
+                const response = await getAllProfileDisplays({ context })
+                setListOfAllUsers(response.data)
             } catch (error) {
-                console.error('Failed to fetch profile displays:', error);
+                console.error('Failed to fetch profile displays:', error)
             }
-        };
+        }
 
         const fetchCurrentUserProfile = async () => {
             try {
-                const response = await getMatchProfile({ context });
-                setCurrentUserProfile(response.data);
+                const response = await getMatchProfile({ context })
+                setCurrentUserProfile(response.data)
             } catch (error) {
-                console.error('Failed to fetch current user profile:', error);
+                console.error('Failed to fetch current user profile:', error)
             }
-        };
+        }
 
-        fetchMessages();
-        fetchAllProfileDisplays();
+        fetchMessages()
+        fetchAllProfileDisplays()
         fetchCurrentUserProfile()
-    }, [context, selectedChannel]);
 
+        // set up polling interval to fetch messages every 15 seconds (15000 = 15 seconds)
+        const intervalId = setInterval(fetchMessages, 15000) 
+
+        // store the interval ID in state, so we can clear it later
+        setPollingIntervalId(intervalId)
+
+        // clean up function to clear interval when the user leaves this page
+        return () => {
+            if (pollingIntervalId) {
+                clearInterval(pollingIntervalId)
+            }
+        }
+    }, [context, selectedChannel])
+
+    // getting user id's and then display names from the lists of all users 
     const getUsernameById = (id) => {
-        const user = listOfAllUsers.find(user => user.user === id);
+        const user = listOfAllUsers.find(user => user.user === id)
         return user ? user.display_name : "Unknown User";
-    };
+    }
 
-    // Function to handle message submission
+    // function to handle message submission
     const submitMessage = async () => {
         try {
             const response = await createMessage({ context, messageChannel: selectedChannel.name, messageContent })
@@ -182,6 +198,7 @@ const SpecificMessageDisplay = ({ setDisplay, selectedChannel }) => {
 
     console.log('MESSAGES: ', messagesInChannel)
 
+    // function for how we're going to display the individual messages, switching sides by user 
     const renderMessages = () => {
         return messagesInChannel.map((message, index) => {
             const isCurrentUser = message.message_author === currentUserProfile.user
@@ -193,7 +210,7 @@ const SpecificMessageDisplay = ({ setDisplay, selectedChannel }) => {
                     style={{ 
                         textAlign: isCurrentUser ? 'right' : 'left', 
                         padding: '10px', 
-                        backgroundColor: isCurrentUser ? '#e0f7fa' : '#e0e0e0', 
+                        backgroundColor: isCurrentUser ? '#D899DB' : '#D9AC89', 
                         borderRadius: '10px',
                         margin: '10px 0'
                     }}
@@ -211,11 +228,11 @@ const SpecificMessageDisplay = ({ setDisplay, selectedChannel }) => {
 
     console.log('CURRENT USER: ', context.user)
 
-    const otherUser1 = selectedChannel.user1[0];
-    const otherUser2 = selectedChannel.user2[0];
-    const otherUser1Name = getUsernameById(otherUser1);
-    const otherUser2Name = getUsernameById(otherUser2);
-    const channelName = `${otherUser1Name} and ${otherUser2Name}`;
+    const otherUser1 = selectedChannel.user1[0]
+    const otherUser2 = selectedChannel.user2[0]
+    const otherUser1Name = getUsernameById(otherUser1)
+    const otherUser2Name = getUsernameById(otherUser2)
+    const channelName = `${otherUser1Name} and ${otherUser2Name}`
 
     return (
         <>

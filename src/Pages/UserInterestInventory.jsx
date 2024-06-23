@@ -2,8 +2,50 @@
 import { useState, useContext, useEffect } from "react"
 import { getInterestInventory, updateInterestInventory, getInterests } from "../api"
 import { Context } from "../Context"
+import ThemeProvider from 'react-bootstrap/ThemeProvider'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
-function UserInterestInventory() {
+const InitialDisplay = ({ setDisplay }) => {
+    const { context } = useContext(Context)
+    const [interestInventory, setInterestInventory] = useState([])
+    const [selectedInterests, setSelectedInterests] = useState([])
+
+    useEffect(() => {
+        const fetchInterestInventory = async () => {
+            try {
+                const response = await getInterestInventory({ context })
+                const interests = response.data.map(item => item.interest.interests)
+                setInterestInventory(response.data)
+                setSelectedInterests(interests)
+                console.log('INTEREST INVENTORY:', response.data)
+            } catch (error) {
+                console.error('Failed to get interest inventory:', error)
+            }
+        }
+        fetchInterestInventory()
+    }, [context])
+
+        // need to put in a no interest found blurb in case it crashes while in their demo?
+    return (
+        <>
+        <h1>Your Current Interests: </h1>
+            {interestInventory.length > 0 ? (
+                <ul>
+                    {interestInventory.map((item, index) => (
+                        <li key={index}>{item.interest.interests}</li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No interests found, update your inventory below!</p>
+            )}
+            <button  onClick={(() => setDisplay('UpdateInventoryDisplay'))}>Update Your Interests!</button>
+        </>
+    )
+}
+
+const UpdateInventoryDisplay = ({ setDisplay }) => {
     const { context } = useContext(Context)
     const [interestInventory, setInterestInventory] = useState([])
     const [selectedInterests, setSelectedInterests] = useState([])
@@ -65,20 +107,11 @@ function UserInterestInventory() {
             console.error('Failed to update interests:', error)
         }
     }
-    // need to put in a no interest found thing for the users who didn't go through the demo
+
     return (
         <div>
-            <h1>Your Current Interests: </h1>
-            {interestInventory.length > 0 ? (
-                <ul>
-                    {interestInventory.map((item, index) => (
-                        <li key={index}>{item.interest.interests}</li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No interests found</p>
-            )}
             <h2>Update Your Interests: </h2>
+            <div>Select Your Interests: {selectedInterests.length} / {maxSelections}</div>
             {interestList.length > 0 ? (
                 <form>
                     {interestList.map((interest) => (
@@ -104,5 +137,30 @@ function UserInterestInventory() {
         </div>
     )
 }
+
+function UserInterestInventory(){
+    const [display, setDisplay] = useState('InitialDisplay')
+
+    return (
+        <ThemeProvider
+          breakpoints={['xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs']}
+          minBreakpoint="xs"
+          >
+          <Container>
+            <Row className="justify-content-center m-3">
+              <Col xs={12} md={7} className="d-flex flex-column justify-content-between text-center MainBody">
+                <div className="overflow-scroll" style={{height: "75vh"}}>
+                  <div>
+                  {display === "InitialDisplay" && <InitialDisplay setDisplay={setDisplay} />}
+                  {display === "UpdateInventoryDisplay" && <UpdateInventoryDisplay setDisplay={setDisplay} />}
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          </Container>
+      </ThemeProvider>
+    )
+}
+
 
 export default UserInterestInventory
