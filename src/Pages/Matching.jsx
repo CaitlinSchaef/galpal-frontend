@@ -167,7 +167,13 @@ const Body = () => {
 
             if (existingRequest) {
                 // Update existing request to 'Approved'
-                await updateMatchRequest({ context, id: existingRequest.id, data: { status: 'Approved', matched: true } })
+                let editedRequest = {
+                    ...existingRequest,
+                    status: 'Approved',
+                    matched: true
+                }
+                // await updateMatchRequest({ context, id: existingRequest.id, data: { status: 'Approved', matched: true } })
+                await updateMatchRequest({ context, id: existingRequest.id, data: editedRequest })
             } else {
                 // Create new match request with status 'Pending'
                 await createMatchRequest({ context, data: { requested: currentProfile.display_name, status: 'Pending' } })

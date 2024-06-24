@@ -349,7 +349,7 @@ export const createMatchRequest = ({ context, data }) => {
 // using a patch because it will just update part of the thing, but maybe need to change it to a put?
 export const updateMatchRequest = ({ context, data, id }) => {
   return axios({
-    method: 'patch',
+    method: 'put',
     url: `${baseUrl}/update-match-request/${id}/`,
     headers: {
       Authorization: `Bearer ${context.accessToken}`,
