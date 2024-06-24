@@ -1,0 +1,12 @@
+/* src/BackgroundAnimation.css */
+body {
+    background-color: #ABABDD;
+}
+svg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 0; /* Ensure this is behind the content */
+}

@@ -3,7 +3,9 @@
   height: 100vh;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
+
 #page-content {
   flex-grow: 2;
   max-height: 100%;
@@ -16,6 +18,7 @@ html {
 
 body {
   background-color: #B4B6D9;
+  height: 100%;
   background-size: cover;
     /* attachment is what let you wrap it to the screen properly */
   background-attachment: fixed;
@@ -55,6 +58,19 @@ body {
  .deleteButton {
   background-color: red;
  }
+
+ .App {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  padding: 20px;
+}
 
 /* 
 Palette:
