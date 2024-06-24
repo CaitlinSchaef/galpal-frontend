@@ -20,7 +20,7 @@ function MyNavBar() {
     return null; // Doesn't show the header on these pages
   } else {
     return (
-      <>
+      <div className="vw-100">
         <Navbar className="custom-navbar">
           <Container>
             <Navbar.Brand>
@@ -29,8 +29,8 @@ function MyNavBar() {
                   <img
                     alt=""
                     src={Logo}
-                    width="70"
-                    height="70"
+                    width="50"
+                    height="50"
                     className="d-inline-block m-auto"
                   />
                 </div>
@@ -61,7 +61,7 @@ function MyNavBar() {
             </div>
           </Container>
         </Navbar>
-      </>
+      </ div>
     )
   }
 }

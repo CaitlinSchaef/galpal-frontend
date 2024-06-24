@@ -52,7 +52,7 @@ const Protected = ({component}) => {
 // If you want to add a footer, do it after the outlet div with <Footer /> same for navbar
 function Layout() {
   return (
-    <div className="d-flex flex-column justify-content-between vh-100">
+    <div className="d-flex flex-column justify-content-between vw-100 vh-100">
       <MyNavBar />
       <div id='page-content'>
         <Outlet />

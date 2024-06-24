@@ -35,7 +35,7 @@ const Body = () => {
         <br/>
         <br/>
         <Row className="justify-content-center m-3">
-          <Col xs={10} md={4} className="d-flex flex-column justify-content-between text-center MainBody mt-5">
+          <Col xs={12} md={8} className="d-flex flex-column justify-content-between text-center MainBody mt-5">
             <div className="overflow-scroll" style={{height: "50vh"}}>
               <h1>Login</h1>
               <div>
@@ -48,6 +48,7 @@ const Body = () => {
               <div>
                 <div>Password:</div>
                 <input 
+                  type="password"
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
                 />
