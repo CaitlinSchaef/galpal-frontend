@@ -6,7 +6,7 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { getUser, getMatchProfile, getAnswers, baseUrl, updateMatchProfileDisplay, updateProfileAnswer } from "../api"
+import { getUser, getMatchProfile, getAnswers, baseUrl, updateMatchProfileDisplay, updateProfileAnswer, getQuestions } from "../api"
 import { Context } from "../Context"
 import Image from 'react-bootstrap/Image'
 
@@ -251,11 +251,117 @@ const UpdateMatchProfileDisplay = ({ setDisplay }) => {
 }
 
 const UpdateMatchAnswersDisplay = ({ setDisplay }) => {
+    const { context } = useContext(Context)
+    const [answerList, setAnswerList] = useState()
+    const [questionList, setQuestionList] = useState([])
+    const [updatedAnswers, setUpdatedAnswers] = useState([])
 
-}
+    //fetch match profile questions when the page loads, going to put them in a drop down
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            try {
+                const response = await getQuestions({ context })
+                setQuestionList(response.data)
+            } catch (error) {
+                console.error('Failed to fetch questions:', error)
+            }
+        }
+        fetchQuestions()
+    }, [context])
+
+
+    console.log('QUESTION LIST: ', questionList)
+
+    useEffect(() => {
+        const grabAnswers = async () => {
+            try {
+                const response = await getAnswers({ context });
+                setAnswerList(response.data);
+                setUpdatedAnswers(response.data); // Initialize updated answers with fetched answers
+            } catch (error) {
+                console.error('Failed to fetch answers:', error);
+            }
+        };
+        grabAnswers();
+    }, [context]);
+
+    // Handle input changes in the form
+    const handleInputChange = (index, event) => {
+        const { name, value, files } = event.target;
+        const newUpdatedAnswers = [...updatedAnswers];
+        if (name === 'image_answer') {
+            newUpdatedAnswers[index][name] = files[0];
+        } else {
+            newUpdatedAnswers[index][name] = value;
+        }
+        setUpdatedAnswers(newUpdatedAnswers);
+    };
+
+    // Handle the update
+    const handleUpdate = async (index) => {
+        const answer = updatedAnswers[index];
+        try {
+            const formData = new FormData();
+            formData.append('question', answer.question.question);
+            formData.append('answer', answer.answer);
+            if (answer.image_answer instanceof File) {
+                formData.append('image_answer', answer.image_answer);
+            }
+
+            await updateProfileAnswer({ context, formData, id: answer.id });
+            setDisplay('InitialDisplay'); // Switch back to view mode
+        } catch (error) {
+            console.error('Failed to update MatchProfile:', error);
+        }
+    };
+
+    return (
+        <div>
+            <h1>Edit Your Match Answers</h1>
+            {updatedAnswers.map((answer, index) => (
+                <div key={index}>
+                    <form onSubmit={() => handleUpdate(index)}>
+                        <div>
+                            <label>Question:</label>
+                            <select
+                                name="question"
+                                value={answer.question.question}
+                                onChange={(e) => handleInputChange(index, e)}
+                            >
+                                <option value="">Select a question</option>
+                                {questionList.map((q) => (
+                                    <option key={q.id} value={q.question}>{q.question}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label>Answer:</label>
+                            <input
+                                type="text"
+                                name="answer"
+                                value={answer.answer}
+                                onChange={(e) => handleInputChange(index, e)}
+                            />
+                        </div>
+                        <div>
+                            <label>Image:</label>
+                            <input
+                                type="file"
+                                name="image_answer"
+                                onChange={(e) => handleInputChange(index, e)}
+                            />
+                        </div>
+                        <button type="button" onClick={() => handleUpdate(index)}>Update</button>
+                    </form>
+                </div>
+            ))}
+            <button onClick={() => setDisplay('InitialDisplay')}>Cancel</button>
+        </div>
+    );
+};
 
 function UserMatchProfile(){
-    const { context } = useContext(Context);
+    const { context } = useContext(Context)
     const [display, setDisplay] = useState('InitialDisplay')
 
 

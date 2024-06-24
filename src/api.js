@@ -128,17 +128,15 @@ export const createAnswer = ({ context, formData }) => {
 }
 
 //update profile answers
-export const updateProfileAnswer = ({ context, formData  }) => {
+export const updateProfileAnswer = ({ context, formData, id  }) => {
   return axios({
       method: 'put',
-      url: `${baseUrl}/update-answer/`,
+      url: `${baseUrl}/update-answer/${id}/`,
       headers: {
           Authorization: `Bearer ${context.accessToken}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'multipart/form-data'
       },
-      data: {
-          data: formData
-      }
+      data: formData
   })
 }
 
