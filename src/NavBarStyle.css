@@ -1,43 +1,41 @@
 .navbar {
-    background-color: #D899DB; 
-    color: #B4B6D9;
-    text-decoration: none;
-    font-family: "josefin-sans", sans-serif;
-    font-weight: 600;
-    font-style: normal;
+  background-color: #D899DB; 
+  color: #B4B6D9;
+  text-decoration: none;
+  font-family: "josefin-sans", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  width: 100vh;
 }
+
 .navbar-brand {
-    color: #B4B6D9;
-    margin-left: 1px;
-    
-  }
-  
-  .nav-link {
-    color: #B4B6D9 !important;
-    padding: 1px;
-  }
+  color: #B4B6D9;
+  margin-left: 1px;
+}
 
-  .navbutton {
-    background-color: #E6E6FA;
-    color: #2F39C5;
-  }
+.nav-link {
+  color: #B4B6D9 !important;
+  padding: 1px;
+}
 
-  .react-icons {
-    font-size: 1.5rem;
-    color: #2F39C5;
-    vertical-align: middle;
-    justify-content: end;
-  }
-/* 
-Palette:
-#A9ACD9 - GREY PURPLE
-#ABABDD - BASE PURPLE
-#B4B6D9 - REALLY GREY COOL PURPLE
-#D5D7F2 - LIGHT LAVENDER
-#E6E6FA - realllly light nice grey purple in logo
-#D9AC89 - MUTED ORANGE
-#D899DB - MUTED PINK
-#A97AA1 - DEEP MUTED PINK
-#2F39C5 - BRIGHT DEEP BLUE
-#696ED6 - BRIGHT FUNKY PURPLE
-*/
+.navbutton {
+  background-color: #E6E6FA;
+  color: #2F39C5;
+}
+
+.react-icons {
+  font-size: 1.5rem;
+  color: #2F39C5;
+  vertical-align: middle;
+}
+
+.custom-navbar .ml-auto {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.custom-navbar .nav-link {
+  margin-right: 10px;
+}
+

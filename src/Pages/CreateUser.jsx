@@ -45,7 +45,7 @@ const Body = () => {
           <Container className="mt-5">
             <Row className="justify-content-center m-3">
               <Col xs={12} md={8} className="d-flex flex-column justify-content-between text-center MainBody">
-                <div className="overflow-scroll" style={{height: "50vh"}}>
+                <div className="overflow-scroll" style={{height: "75vh"}}>
                   <h1>Create New User</h1>
                   <div>
                     <div>Username:</div>

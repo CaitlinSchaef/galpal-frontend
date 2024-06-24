@@ -55,12 +55,17 @@ function ProfilePortal(){
                     <h1>Hello {name}!</h1>
                     <br/>
                     <Image src={`${baseUrl}${profilePhoto}`} width="271" height="280" roundedCircle/>
+                    <br/>
+                    <br/>
+
                     <Link to='/UserMatchProfile'>
-                        <h3> View or Change Your Match Display </h3>
+                    <button> View or Change Your Match Profile  </button>
                     </Link>
                     <br/>
+                    <br/>
                     <Link to='/UserInterestInventory'>
-                        <h3> View or Change Your Interest Inventory </h3>
+                      <button> View or Change Your Interest Inventory  </button>
+                      
                     </Link>
                 </div>
               </Col>

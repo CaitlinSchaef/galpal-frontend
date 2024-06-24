@@ -20,17 +20,17 @@ body {
   background-color: #B4B6D9;
   height: 100%;
   background-size: cover;
-    /* attachment is what let you wrap it to the screen properly */
+  /* attachment is what lets you wrap it to the screen properly */
   background-attachment: fixed;
   overflow: hidden;
   color: #f6f4e6;
   font-family: "josefin-sans", sans-serif;
   font-weight: 400;
   font-style: normal;
- }
+}
 
- .MainBody {
-  background-color: #ABABDD;
+.MainBody {
+  background-color: #c68cc9;
   border-radius: 2%;
   color: white;
   /* border-style: solid;
@@ -39,27 +39,28 @@ body {
   flex-wrap: wrap;
   padding-top: 5px;
   margin-top: 30px;
- }
+}
 
- .FrontLogo {
+.FrontLogo {
   margin-top: 70px;
   background-color: none;
   border: none;
   color: none;
   border-style: none;
- }
+}
 
- button {
+button {
   background-color: #E6E6FA;
   color: #A97AA1;
   border-radius: 4%;
- }
+}
 
- .deleteButton {
+.deleteButton {
   background-color: red;
- }
+  color: black;
+}
 
- .App {
+.App {
   text-align: center;
   position: relative;
   z-index: 1;
@@ -71,6 +72,21 @@ body {
   color: white;
   padding: 20px;
 }
+
+
+/* 
+Palette:
+#A9ACD9 - GREY PURPLE
+#ABABDD - BASE PURPLE
+#B4B6D9 - REALLY GREY COOL PURPLE
+#D5D7F2 - LIGHT LAVENDER
+#E6E6FA - realllly light nice grey purple in logo
+#D9AC89 - MUTED ORANGE
+#D899DB - MUTED PINK
+#A97AA1 - DEEP MUTED PINK
+#2F39C5 - BRIGHT DEEP BLUE
+#696ED6 - BRIGHT FUNKY PURPLE
+*/
 
 /* 
 Palette:

@@ -1,10 +1,10 @@
 // src/BackgroundAnimation.js
-import React from 'react';
-import './BackgroundAnimation.css';
+import React from 'react'
+import './BackgroundAnimation.css'
 
 const BackgroundAnimation = () => {
   return (
-    <svg preserveAspectRatio="xMidYMid slice" viewBox="10 10 80 80">
+    <svg className="background-animation" preserveAspectRatio="xMidYMid slice" viewBox="10 10 80 80">
       <defs>
         <style>
           {`
@@ -43,7 +43,8 @@ const BackgroundAnimation = () => {
   )
 }
 
-export default BackgroundAnimation;
+export default BackgroundAnimation
+
 
 /* 
 Palette:
