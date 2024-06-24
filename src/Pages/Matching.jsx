@@ -219,7 +219,7 @@ const Body = () => {
                 {displayProfile()}
             </div>
             <button onClick={handlePass}>PASS</button>
-            <button onClick={handleFriend}>FRIEND</button>
+            <button onClick={handleFriend} disabled={potentialMatches.length === 0}>FRIEND</button>
         </div>
     )
 }
