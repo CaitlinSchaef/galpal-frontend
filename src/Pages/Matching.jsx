@@ -111,11 +111,15 @@ const Body = () => {
                ? matchRequests.filter(request => request.status === 'Pending').map(request => request.requested_display_name)
                : []
 
+            // updating to not show approved ones either
+            const approvedRequested = Array.isArray(matchRequests)
+               ? matchRequests.filter(request => request.status === 'Approved').map(request => request.requested_display_name)
+               : []
 
             // filter potential matches by current user, denied requested and denied requester
             // basically I don't want to show match requests where the status is Denied and the current user is the requested or requester
             const filteredMatches = profilesWithInterests.filter(profile =>
-                profile.display_name !== currentUserName && !deniedUsers.includes(profile.display_name) && !deniedRequesters.includes(profile.display_name) && !pendingRequested.includes(profile.display_name)
+                profile.display_name !== currentUserName && !deniedUsers.includes(profile.display_name) && !deniedRequesters.includes(profile.display_name) && !pendingRequested.includes(profile.display_name) && !approvedRequested.includes(profile.display_name)
 
             )
 
@@ -183,10 +187,22 @@ const Body = () => {
             )
         }
 
-        const profile = potentialMatches[currentProfileIndex]
+        // const profile = potentialMatches[currentProfileIndex]
 
+        // // Filter answers for the current profile
+        // const profileAnswers = allAnswerList.filter(answer => answer.user === profile.user)
+
+        let profileAnswers = [];
+        const profile = potentialMatches[currentProfileIndex];
+
+        if (profile) {
         // Filter answers for the current profile
-        const profileAnswers = allAnswerList.filter(answer => answer.user === profile.user)
+        profileAnswers = allAnswerList.filter(answer => answer.user === profile.user);
+        } else {
+        // Handle the case when there are no more profiles
+        console.warn('No more profiles available.');
+        return 'No more friends to meet!'
+        }
 
         return (
             <div>
@@ -218,7 +234,7 @@ const Body = () => {
             <div>
                 {displayProfile()}
             </div>
-            <button onClick={handlePass}>PASS</button>
+            <button onClick={handlePass} disabled={potentialMatches.length === 0}>PASS</button>
             <button onClick={handleFriend} disabled={potentialMatches.length === 0}>FRIEND</button>
         </div>
     )

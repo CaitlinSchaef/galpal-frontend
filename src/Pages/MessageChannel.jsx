@@ -237,7 +237,7 @@ const SpecificMessageDisplay = ({ setDisplay, selectedChannel }) => {
     return (
         <>
         <button onClick={() => setDisplay('InitialDisplay')}>Back to All Messages</button>
-        <h1>Specific Message Channel: {channelName}</h1>
+        <h1>{channelName}</h1>
         <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
             {messagesInChannel.length > 0 ? (
                 renderMessages()
