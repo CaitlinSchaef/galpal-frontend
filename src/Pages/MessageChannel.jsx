@@ -157,7 +157,7 @@ const SpecificMessageDisplay = ({ setDisplay, selectedChannel }) => {
         fetchCurrentUserProfile()
 
         // set up polling interval to fetch messages every 15 seconds (15000 = 15 seconds)
-        const intervalId = setInterval(fetchMessages, 15000) 
+        const intervalId = setInterval(fetchMessages, 3000) 
 
         // store the interval ID in state, so we can clear it later
         setPollingIntervalId(intervalId)
