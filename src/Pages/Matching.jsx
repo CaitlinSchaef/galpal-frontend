@@ -111,15 +111,25 @@ const Body = () => {
                ? matchRequests.filter(request => request.status === 'Pending').map(request => request.requested_display_name)
                : []
 
-            // updating to not show approved ones either
+            console.log('PENDING REQUEST: ', pendingRequested)
+
+            // updating to not show approved ones either, need to add one for requester?
             const approvedRequested = Array.isArray(matchRequests)
                ? matchRequests.filter(request => request.status === 'Approved').map(request => request.requested_display_name)
                : []
 
+            // not approved requester either
+            const approvedRequester = Array.isArray(matchRequests)
+               ? matchRequests.filter(request => request.status === 'Approved').map(request => request.requester_display_name)
+               : []
+            
+            console.log('APPROVED REQUESTS: ', approvedRequested)
+
             // filter potential matches by current user, denied requested and denied requester
             // basically I don't want to show match requests where the status is Denied and the current user is the requested or requester
+            // ADDING THE APPROVED REQUESTED MESSED STUFF UP
             const filteredMatches = profilesWithInterests.filter(profile =>
-                profile.display_name !== currentUserName && !deniedUsers.includes(profile.display_name) && !deniedRequesters.includes(profile.display_name) && !pendingRequested.includes(profile.display_name) && !approvedRequested.includes(profile.display_name)
+                profile.display_name !== currentUserName && !deniedUsers.includes(profile.display_name) && !deniedRequesters.includes(profile.display_name) && !pendingRequested.includes(profile.display_name) && !approvedRequested.includes(profile.display_name) && !approvedRequester.includes(profile.display_name)
 
             )
 
